@@ -20,15 +20,18 @@ public class p2pNode {
     public void connectToPeer() {
         try {
             client.sendToServer("Ping");
+            System.out.println("Client mode");
         } catch (IOException e1) {
             try {
                 server.sendToClient("Ping");
+                System.out.println("Server mode");
             } catch (IOException e2) {
                 System.out.println("Node not found");
                 isConnected = false;
             }
         }finally {
             isConnected = true;
+            System.out.println("Connected");
         }
     }
 
