@@ -40,10 +40,10 @@ public class p2pNode {
         connectToPeer();
         if(isConnected) {
             try {
-                message = client.receiveFromServer();
+                message = client.sendToServer("Ping");
             } catch (IOException e) {
                 try {
-                    message = server.receiveFromClient();
+                    message = server.sendToClient("Ping");
                 } catch (IOException ignored){}
             }
         }
