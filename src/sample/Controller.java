@@ -2,19 +2,28 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import sample.J2J.Server;
+import sample.J2J.*;
 import java.io.IOException;
 
 public class Controller {
     @FXML
-    Text message;
+    Text messageFetched;
+
+    @FXML
+    TextField messageToSend;
 
     @FXML
     public void sendMessage(ActionEvent e) throws IOException {
-        Server server = new Server();
-        server.setPortNumber(6066);
-        message.setText(server.sendToClient("Hello from the other side"));
+        p2pNode instance = new p2pNode(6066,"192.168.0.110");
+        instance.sendMessage(messageToSend.getCharacters().toString());
 
+    }
+
+    @FXML
+    public void fetchMessage(ActionEvent e) throws IOException {
+        p2pNode instance = new p2pNode(6066,"192.168.0.110");
+        messageFetched.setText(instance.fetchMessage());
     }
 }

@@ -1,11 +1,11 @@
-package sample.J2J;
+package sample.J2J.ClientServerStack;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Client extends p2pNode{
+public class Client extends BaseNode {
 
     public String sendToServer(String data) throws IOException {
         int portNumber = getPortNumber();
@@ -21,4 +21,11 @@ public class Client extends p2pNode{
     public String receiveFromServer() throws IOException {
         return data;
     }
+    public Client(){
+        //default
+    }
+    public Client(int portNumber, String ipAddress){
+        super(portNumber,ipAddress);
+    }
+
 }

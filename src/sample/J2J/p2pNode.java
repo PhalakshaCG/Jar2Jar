@@ -1,32 +1,65 @@
 package sample.J2J;
+import sample.J2J.ClientServerStack.*;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.prefs.Preferences;
 
 public class p2pNode {
-    protected final String PortNumber = "port_number";
-    protected final String IPAddress = "IP_Address";
-    String data;
+    BaseNode instance = new BaseNode();
+    boolean isConnected;
+    Client client;
+    Server server;
+    public p2pNode(int portNumber, String ipAddress){
+        assert false;
+        instance.setIPAddress(ipAddress);
+        instance.setPortNumber(portNumber);
+        client = new Client(instance.getPortNumber(), instance.getIPAddress());
+        server = new Server(instance.getPortNumber(), instance.getIPAddress());
 
-    public void setPortNumber(int portNumber){
-        Preferences preferences = Preferences.userNodeForPackage(Server.class);
-        preferences.putInt(PortNumber,portNumber);
+    }
 
+    public void connectToPeer() {
+        try {
+            client.sendToServer("Ping");
+        } catch (IOException e1) {
+            try {
+                server.sendToClient("Ping");
+            } catch (IOException e2) {
+                System.out.println("Node not found");
+                isConnected = false;
+            }
+        }finally {
+            isConnected = true;
+        }
     }
-    public int getPortNumber(){
-        Preferences preferences = Preferences.userNodeForPackage(Server.class);
-        return preferences.getInt(PortNumber,80);
+
+    public String fetchMessage(){
+        String message = null;
+        connectToPeer();
+        if(isConnected) {
+            try {
+                message = client.sendToServer("Ping");
+            } catch (IOException e) {
+                try {
+                    message = server.sendToClient("Ping");
+                } catch (IOException ignored){}
+            }
+        }
+        else {
+            message = "Not connected to a peer";
+        }
+        return message;
     }
-    public void setIPAddress(String ipAddress){
-        Preferences preferences = Preferences.userNodeForPackage(Server.class);
-        preferences.put(IPAddress,ipAddress);
-    }
-    public String getIPAddress(){
-        Preferences preferences = Preferences.userNodeForPackage(Server.class);
-        return preferences.get(IPAddress,"192.168.0.1");
+
+    public void sendMessage(String message){
+        connectToPeer();
+        if(isConnected){
+            try {
+                client.sendToServer(message);
+            } catch (IOException e) {
+                try {
+                     server.sendToClient(message);
+                } catch (IOException ignored){}
+            }
+        }
     }
 }
