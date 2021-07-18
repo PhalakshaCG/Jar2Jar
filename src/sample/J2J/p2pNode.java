@@ -7,9 +7,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.prefs.Preferences;
 
-public class p2pNode implements p2pClient, p2pServer{
+public class p2pNode {
     protected final String PortNumber = "port_number";
     protected final String IPAddress = "IP_Address";
+    String data;
 
     public void setPortNumber(int portNumber){
         Preferences preferences = Preferences.userNodeForPackage(Server.class);
@@ -27,39 +28,5 @@ public class p2pNode implements p2pClient, p2pServer{
     public String getIPAddress(){
         Preferences preferences = Preferences.userNodeForPackage(Server.class);
         return preferences.get(IPAddress,"192.168.0.1");
-    }
-    public void sendToServer(String data) throws IOException {
-        int portNumber = getPortNumber();
-        String ipAddress = getIPAddress();
-        Socket socket = new Socket(ipAddress,portNumber);
-        DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-        outputStream.writeUTF(data);
-        socket.close();
-    }
-    public String receiveFromServer() throws IOException {
-        int portNumber = getPortNumber();
-        String ipAddress = getIPAddress();
-        Socket socket = new Socket(ipAddress,portNumber);
-        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-        String data = inputStream.readUTF();
-        socket.close();
-        return data;
-    }
-    public void sendToClient(String data) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(getPortNumber());
-        Socket socket = serverSocket.accept();
-        DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-        outputStream.writeUTF(data);
-        socket.close();
-        serverSocket.close();
-    }
-    public String receiveFromClient() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(getPortNumber());
-        Socket socket = serverSocket.accept();
-        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-        String data = inputStream.readUTF();
-        socket.close();
-        serverSocket.close();
-        return data;
     }
 }

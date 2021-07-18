@@ -15,10 +15,6 @@ public class Main extends Application {
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
-        Server server = new Server();
-        server.setPortNumber(6066);
-        server.sendToClient("Hello from the other side");
-        System.out.println(server.receiveFromClient());
     }
 
     public static void main(String[] args) {
