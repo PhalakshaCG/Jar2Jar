@@ -46,11 +46,13 @@ public class p2pNode {
             case CLIENT -> {
                 try{
                     message = client.sendToServer(client.getData());
+                    client.setData(message);
                 } catch (IOException ignored) {}
             }
             case SERVER -> {
                 try {
                     message = server.sendToClient(server.getData());
+                    server.setData(message);
                 } catch (IOException ignored){}
             }
             case NULL -> message = "No message sent";
