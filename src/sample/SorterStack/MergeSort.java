@@ -1,9 +1,17 @@
 package sample.SorterStack;
 
-public class MergeSort extends Sorter{
+public class MergeSort implements Sorter{
 
-    public void sortArray(){
-
+    public int[] sortArray(int[] array){
+        if(array.length == 1)
+            return array;
+        int[] arr1 = new int[array.length/2];
+        int[] arr2 = new int[array.length - array.length/2];
+        System.arraycopy(array,0,arr1,0,arr1.length);
+        System.arraycopy(array,array.length/2,arr2,0,arr2.length);
+        arr1=sortArray(arr1);
+        arr2 = sortArray(arr2);
+        return merge(arr1,arr2);
     }
 
     public int[] merge(int[] arr1, int[] arr2){
@@ -27,5 +35,12 @@ public class MergeSort extends Sorter{
             }
         }
         return combinedArr;
+    }
+    public int[] generateRandomArray(int length, int range){
+        int[] array = new int[length];
+        for(int i = 0; i < array.length; i++){
+            array[i] = (int)Math.floor(Math.random()*range + 1);
+        }
+        return array;
     }
 }

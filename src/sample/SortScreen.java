@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;;
 
 public class SortScreen {
+
     @FXML
     ScrollPane unsortedArrayPane;
 
