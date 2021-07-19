@@ -10,9 +10,10 @@ import sample.J2J.*;
 import sample.J2J.ClientServerStack.BaseNode;
 
 import java.net.URL;
+import java.util.EventListener;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class Controller implements Initializable, EventListener {
     @FXML
     Text messageFetched;
 
@@ -64,5 +65,7 @@ public class Controller implements Initializable {
     public void closeWindow(){
         fetcherThread.interrupt();
         p2pInstance = null;
+        messageStatus.setText(" ");
     }
+
 }

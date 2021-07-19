@@ -32,7 +32,7 @@ public class p2pNode {
                 //System.out.println("Server mode");
                 mode = Mode.SERVER;
             } catch (IOException e2) {
-                System.out.println("Node not found");
+                //System.out.println("Node not found");
                 isConnected = false;
                 mode = Mode.NULL;
             }

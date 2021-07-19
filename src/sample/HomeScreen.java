@@ -4,9 +4,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
+
 import java.io.IOException;
 import java.util.Objects;
 
@@ -17,7 +19,15 @@ public class HomeScreen {
         Parent root = loader.load();
         Stage stage = new Stage();
         stage.setTitle("Jar2Jar");
-        stage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        scene.addEventHandler(KeyEvent.KEY_PRESSED,(keyEvent) -> {
+            System.out.println(keyEvent.getCode().toString());
+            if(keyEvent.getCode().toString().equals("ENTER")){
+                Controller controller = loader.getController();
+                controller.sendMessage(new ActionEvent());
+            }
+        });
+        stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(windowEvent -> {
             Controller controller = loader.getController();
