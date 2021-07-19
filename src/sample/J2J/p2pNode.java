@@ -38,7 +38,7 @@ public class p2pNode {
             }
         }finally {
             isConnected = true;
-            System.out.println("Connected");
+            //System.out.println("Connected");
         }
     }
 
@@ -58,7 +58,7 @@ public class p2pNode {
             }
             case NULL -> message = "No message sent";
         }
-        System.out.println(fetchMessage);
+        //System.out.println(fetchMessage);
         return fetchMessage;
     }
 
