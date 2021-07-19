@@ -58,7 +58,7 @@ public class Controller implements Initializable, EventListener {
         p2pInstance = new p2pNode(new BaseNode().getPortNumber(),new BaseNode().getIPAddress());
         autoFetch.setSelected(true);
         fetchFunction = () -> {
-            while (!autoFetch.isSelected()) {
+            while (autoFetch.isSelected()) {
                 try {
                     messageFetched.setText(p2pInstance.fetchMessage());
                     messageStatus.setText("Connected");

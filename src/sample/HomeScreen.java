@@ -21,7 +21,7 @@ public class HomeScreen {
         stage.setTitle("Jar2Jar");
         Scene scene = new Scene(root);
         scene.addEventHandler(KeyEvent.KEY_PRESSED,(keyEvent) -> {
-            System.out.println(keyEvent.getCode().toString());
+            //System.out.println(keyEvent.getCode().toString());
             if(keyEvent.getCode().toString().equals("ENTER")){
                 Controller controller = loader.getController();
                 controller.sendMessage(new ActionEvent());
