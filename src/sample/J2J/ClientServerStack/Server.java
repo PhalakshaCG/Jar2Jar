@@ -18,6 +18,8 @@ public class Server extends BaseNode {
         this.data = inputStream.readUTF();
         socket.close();
         serverSocket.close();
+        //System.out.println("Sent: " + data);
+        //System.out.println("Received: " + this.data);
         return this.data;
     }
     public String receiveFromClient() throws IOException {

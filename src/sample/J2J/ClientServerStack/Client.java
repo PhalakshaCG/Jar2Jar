@@ -16,6 +16,8 @@ public class Client extends BaseNode {
         DataInputStream inputStream = new DataInputStream(socket.getInputStream());
         this.data = inputStream.readUTF();
         socket.close();
+        //System.out.println("Sent: " + data);
+        //System.out.println("Received: " + this.data);
         return this.data;
     }
     public String receiveFromServer() throws IOException {
