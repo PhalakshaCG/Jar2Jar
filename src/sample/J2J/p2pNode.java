@@ -80,4 +80,7 @@ public class p2pNode {
             case NULL -> System.out.println("Nobody to broadcast");
         }
     }
+    public Mode getMode(){
+        return mode;
+    }
 }

@@ -1,5 +1,5 @@
 package sample.J2J;
 
-enum Mode {
+public enum Mode {
     CLIENT, SERVER, NULL
 }
