@@ -9,7 +9,8 @@ import javafx.scene.text.Text;
 import sample.J2J.ClientServerStack.BaseNode;
 import sample.J2J.Mode;
 import sample.J2J.p2pNode;
-import sample.SorterStack.MergeSort;;import java.net.URL;
+import sample.SorterStack.MergeSort;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -75,6 +76,8 @@ public class SortScreen implements Initializable {
             while (!isConnected) {
                 try {
                     array = convertToIntArray(resourceSharer.fetchMessage());
+                    initScrollPane(unsortedArrayPane);
+                    isConnected = true;
                 }catch (Exception ignored){}
             }
         };
