@@ -65,7 +65,7 @@ public class Controller implements Initializable {
     }
 
     public void closeWindow(){
-        p2pInstance = null;
         fetcherThread.interrupt();
+        p2pInstance = null;
     }
 }
