@@ -31,13 +31,9 @@ public class SortScreen implements Initializable {
 
     @FXML
     public void generateRandomNumbers(){
+        isConnected = false;
         array = new MergeSort().generateRandomArray(100,1000);
-        Text listOfNumbers = new Text();
-        String stringArray = Arrays.toString(array);
-        listOfNumbers.setFont(Font.font("Monaco",12));
-        listOfNumbers.setWrappingWidth(unsortedArrayPane.getWidth());
-        listOfNumbers.setText(stringArray.substring(1,stringArray.length() - 1));
-        unsortedArrayPane.setContent(listOfNumbers);
+        initScrollPane(unsortedArrayPane);
         infoText.setText("Random numbers generated!");
     }
 
@@ -59,12 +55,8 @@ public class SortScreen implements Initializable {
         else{
             array = new MergeSort().sortArray(array);
         }
-        Text listOfNumbers = new Text();
-        String stringArray = Arrays.toString(array);
-        listOfNumbers.setFont(Font.font("Monaco",12));
-        listOfNumbers.setWrappingWidth(unsortedArrayPane.getWidth());
-        listOfNumbers.setText(stringArray.substring(1,stringArray.length() - 1));
-        sortedArrayPane.setContent(listOfNumbers);
+        initScrollPane(sortedArrayPane);
+        infoText.setText("Sorted!");
     }
 
     private int[] convertToIntArray(String strArr) throws NumberFormatException{
@@ -105,5 +97,14 @@ public class SortScreen implements Initializable {
         resourceSharer.sendMessage(Arrays.toString(arrayToSort));
         int[] sortedArray = convertToIntArray(resourceSharer.fetchMessage());
         return new MergeSort().merge(arrayToSort,sortedArray);
+    }
+
+    private void initScrollPane(ScrollPane numberPane){
+        Text listOfNumbers = new Text();
+        String stringArray = Arrays.toString(array);
+        listOfNumbers.setFont(Font.font("Monaco",12));
+        listOfNumbers.setWrappingWidth(numberPane.getWidth());
+        listOfNumbers.setText(stringArray.substring(1,stringArray.length() - 1));
+        numberPane.setContent(listOfNumbers);
     }
 }

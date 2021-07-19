@@ -53,8 +53,5 @@ public class HomeScreen {
         stage.setTitle("Configure");
         stage.setScene(new Scene(root));
         stage.show();
-        int[] array = new MergeSort().generateRandomArray(10,100);
-        System.out.println(Arrays.toString(array));
-        System.out.println(Arrays.toString(new MergeSort().sortArray(array)));
     }
 }
