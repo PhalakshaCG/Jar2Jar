@@ -9,6 +9,9 @@ public class p2pNode {
     Client client;
     Server server;
     Mode mode;
+    String sendMessage = "ping";
+    String fetchMessage = "ping";
+
     public p2pNode(int portNumber, String ipAddress){
         assert false;
         instance.setIPAddress(ipAddress);
@@ -20,12 +23,12 @@ public class p2pNode {
 
     public void connectToPeer() {
         try {
-            client.sendToServer("Ping");
+            client.sendToServer(sendMessage);
             //System.out.println("Client mode");
             mode = Mode.CLIENT;
         } catch (IOException e1) {
             try {
-                server.sendToClient("Ping");
+                server.sendToClient(sendMessage);
                 //System.out.println("Server mode");
                 mode = Mode.SERVER;
             } catch (IOException e2) {
@@ -45,33 +48,32 @@ public class p2pNode {
         switch (mode){
             case CLIENT -> {
                 try{
-                    message = client.sendToServer(client.getData());
-                    client.setData(message);
+                    fetchMessage = client.sendToServer(sendMessage);
                 } catch (IOException ignored) {}
             }
             case SERVER -> {
                 try {
-                    message = server.sendToClient(server.getData());
-                    server.setData(message);
+                    fetchMessage = server.sendToClient(sendMessage);
                 } catch (IOException ignored){}
             }
             case NULL -> message = "No message sent";
         }
         System.out.println(message);
-        return message;
+        return fetchMessage;
     }
 
     public void sendMessage(String message){
+        sendMessage = message;
         connectToPeer();
         switch (mode){
             case CLIENT -> {
                 try{
-                    client.sendToServer(message);
+                    client.sendToServer(sendMessage);
                 } catch (IOException ignored) {}
             }
             case SERVER -> {
                 try {
-                    server.sendToClient(message);
+                    server.sendToClient(sendMessage);
                 } catch (IOException ignored){}
             }
             case NULL -> System.out.println("Nobody to broadcast");
