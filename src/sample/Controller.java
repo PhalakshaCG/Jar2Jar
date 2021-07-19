@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import sample.J2J.*;
+import sample.J2J.ClientServerStack.BaseNode;
+
 import java.io.IOException;
 
 public class Controller {
@@ -16,13 +18,18 @@ public class Controller {
 
     @FXML
     public void sendMessage(ActionEvent e) throws IOException {
-        p2pNode instance = new p2pNode(6066,"192.168.0.110");
-        instance.sendMessage(messageToSend.getCharacters().toString());
+        new Thread(() -> {
+            p2pNode instance = new p2pNode(new BaseNode().getPortNumber(),new BaseNode().getIPAddress());
+            instance.sendMessage(messageToSend.getCharacters().toString());
+        }).start();
+
     }
 
     @FXML
     public void fetchMessage(ActionEvent e) throws IOException {
-        p2pNode instance = new p2pNode(6066,"192.168.0.110");
-        messageFetched.setText(instance.fetchMessage());
+        new Thread(() -> {
+            p2pNode instance = new p2pNode(new BaseNode().getPortNumber(),new BaseNode().getIPAddress());
+            messageFetched.setText(instance.fetchMessage());
+        }).start();
     }
 }
