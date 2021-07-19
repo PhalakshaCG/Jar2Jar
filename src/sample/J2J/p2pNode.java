@@ -24,12 +24,12 @@ public class p2pNode {
     public void connectToPeer() {
         try {
             client.sendToServer(sendMessage);
-            //System.out.println("Client mode");
+            System.out.println("Client mode");
             mode = Mode.CLIENT;
         } catch (IOException e1) {
             try {
                 server.sendToClient(sendMessage);
-                //System.out.println("Server mode");
+                System.out.println("Server mode");
                 mode = Mode.SERVER;
             } catch (IOException e2) {
                 //System.out.println("Node not found");
