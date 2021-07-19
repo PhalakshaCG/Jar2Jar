@@ -4,7 +4,7 @@ import java.util.prefs.Preferences;
 public class BaseNode {
     protected final String PortNumber = "port_number";
     protected final String IPAddress = "IP_Address";
-    String data;
+    String data = "Ping";
 
     public void setPortNumber(int portNumber){
         Preferences preferences = Preferences.userNodeForPackage(BaseNode.class);

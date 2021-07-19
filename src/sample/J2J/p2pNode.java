@@ -3,10 +3,6 @@ import sample.J2J.ClientServerStack.*;
 
 import java.io.IOException;
 
-enum Mode{
-    CLIENT, SERVER, NULL
-}
-
 public class p2pNode {
     BaseNode instance = new BaseNode();
     boolean isConnected;
@@ -49,12 +45,12 @@ public class p2pNode {
         switch (mode){
             case CLIENT -> {
                 try{
-                    message = client.sendToServer("Ping");
+                    message = client.sendToServer(client.receiveFromServer());
                 } catch (IOException ignored) {}
             }
             case SERVER -> {
                 try {
-                    message = server.sendToClient("Ping");
+                    message = server.sendToClient(server.receiveFromClient());
                 } catch (IOException ignored){}
             }
             case NULL -> message = "No message sent";
