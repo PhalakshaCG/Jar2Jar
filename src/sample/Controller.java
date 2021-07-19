@@ -16,13 +16,13 @@ public class Controller {
 
     @FXML
     public void sendMessage(ActionEvent e) throws IOException {
-        p2pNode instance = new p2pNode(6066,"192.168.0.111");
+        p2pNode instance = new p2pNode(6066,"192.168.0.110");
         instance.sendMessage(messageToSend.getCharacters().toString());
     }
 
     @FXML
     public void fetchMessage(ActionEvent e) throws IOException {
-        p2pNode instance = new p2pNode(6066,"192.168.0.111");
+        p2pNode instance = new p2pNode(6066,"192.168.0.110");
         messageFetched.setText(instance.fetchMessage());
     }
 }

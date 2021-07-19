@@ -3,11 +3,16 @@ import sample.J2J.ClientServerStack.*;
 
 import java.io.IOException;
 
+enum Mode{
+    CLIENT, SERVER, NULL
+}
+
 public class p2pNode {
     BaseNode instance = new BaseNode();
     boolean isConnected;
     Client client;
     Server server;
+    Mode mode;
     public p2pNode(int portNumber, String ipAddress){
         assert false;
         instance.setIPAddress(ipAddress);
@@ -21,13 +26,16 @@ public class p2pNode {
         try {
             client.sendToServer("Ping");
             System.out.println("Client mode");
+            mode = Mode.CLIENT;
         } catch (IOException e1) {
             try {
                 server.sendToClient("Ping");
                 System.out.println("Server mode");
+                mode = Mode.SERVER;
             } catch (IOException e2) {
                 System.out.println("Node not found");
                 isConnected = false;
+                mode = Mode.NULL;
             }
         }finally {
             isConnected = true;
@@ -38,31 +46,36 @@ public class p2pNode {
     public String fetchMessage(){
         String message = null;
         connectToPeer();
-        if(isConnected) {
-            try {
-                message = client.sendToServer("Ping");
-            } catch (IOException e) {
+        switch (mode){
+            case CLIENT -> {
+                try{
+                    message = client.sendToServer("Ping");
+                } catch (IOException ignored) {}
+            }
+            case SERVER -> {
                 try {
                     message = server.sendToClient("Ping");
                 } catch (IOException ignored){}
             }
-        }
-        else {
-            message = "Not connected to a peer";
+            case NULL -> message = "No message sent";
         }
         return message;
     }
 
     public void sendMessage(String message){
         connectToPeer();
-        if(isConnected){
-            try {
-                client.sendToServer(message);
-            } catch (IOException e) {
+        switch (mode){
+            case CLIENT -> {
+                try{
+                    client.sendToServer(message);
+                } catch (IOException ignored) {}
+            }
+            case SERVER -> {
                 try {
-                     server.sendToClient(message);
+                    server.sendToClient(message);
                 } catch (IOException ignored){}
             }
+            case NULL -> System.out.println("Nobody to broadcast");
         }
     }
 }
