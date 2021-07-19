@@ -23,11 +23,11 @@ public class Controller implements Initializable {
     Text messageStatus;
 
     Thread messengerThread;
+    p2pNode instance = new p2pNode(new BaseNode().getPortNumber(),new BaseNode().getIPAddress());
 
     @FXML
     public void sendMessage(ActionEvent e) {
         messengerThread = new Thread(() -> {
-            p2pNode instance = new p2pNode(new BaseNode().getPortNumber(),new BaseNode().getIPAddress());
             instance.sendMessage(messageToSend.getCharacters().toString());
             messageStatus.setText("Message sent!");
         });
@@ -38,7 +38,6 @@ public class Controller implements Initializable {
     @FXML
     public void fetchMessage(ActionEvent e) {
         messengerThread = new Thread(() -> {
-            p2pNode instance = new p2pNode(new BaseNode().getPortNumber(),new BaseNode().getIPAddress());
             messageFetched.setText(instance.fetchMessage());
             messageStatus.setText("Message received!");
         });
@@ -50,7 +49,6 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Thread fetcher = new Thread(() -> {
             while(true){
-                p2pNode instance = new p2pNode(new BaseNode().getPortNumber(),new BaseNode().getIPAddress());
                 messageFetched.setText(instance.fetchMessage());
                 messageStatus.setText("Message received!");
             }
