@@ -11,6 +11,7 @@ public class Server extends BaseNode {
     public String sendToClient(String data) throws IOException {
         ServerSocket serverSocket = new ServerSocket(getPortNumber());
         Socket socket = serverSocket.accept();
+        socket.setSoTimeout(5*1000);
         DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
         outputStream.writeUTF(data);
         DataInputStream inputStream = new DataInputStream(socket.getInputStream());
