@@ -23,6 +23,12 @@ public class BaseNode {
         Preferences preferences = Preferences.userNodeForPackage(BaseNode.class);
         return preferences.get(IPAddress,"192.168.0.1");
     }
+    public String getData(){
+        return data;
+    }
+    public void setData(String data){
+        this.data = data;
+    }
     public BaseNode(){
         //default constructor
     }

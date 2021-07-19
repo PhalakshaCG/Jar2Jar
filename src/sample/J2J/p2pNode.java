@@ -20,12 +20,12 @@ public class p2pNode {
 
     public void connectToPeer() {
         try {
-            client.sendToServer("Ping");
+            client.setData(client.sendToServer(client.receiveFromServer()));
             System.out.println("Client mode");
             mode = Mode.CLIENT;
         } catch (IOException e1) {
             try {
-                server.sendToClient("Ping");
+                server.setData(server.sendToClient(server.receiveFromClient()));
                 System.out.println("Server mode");
                 mode = Mode.SERVER;
             } catch (IOException e2) {
