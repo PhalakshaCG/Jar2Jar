@@ -15,10 +15,10 @@ public class Server extends BaseNode {
         DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
         outputStream.writeUTF(data);
         DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-        data = inputStream.readUTF();
+        this.data = inputStream.readUTF();
         socket.close();
         serverSocket.close();
-        return data;
+        return this.data;
     }
     public String receiveFromClient() throws IOException {
         return data;
