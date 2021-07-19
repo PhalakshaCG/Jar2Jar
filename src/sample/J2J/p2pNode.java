@@ -58,7 +58,7 @@ public class p2pNode {
             }
             case NULL -> message = "No message sent";
         }
-        System.out.println(message);
+        System.out.println(fetchMessage);
         return fetchMessage;
     }
 
@@ -68,12 +68,12 @@ public class p2pNode {
         switch (mode){
             case CLIENT -> {
                 try{
-                    client.sendToServer(sendMessage);
+                    fetchMessage = client.sendToServer(sendMessage);
                 } catch (IOException ignored) {}
             }
             case SERVER -> {
                 try {
-                    server.sendToClient(sendMessage);
+                    fetchMessage = server.sendToClient(sendMessage);
                 } catch (IOException ignored){}
             }
             case NULL -> System.out.println("Nobody to broadcast");
