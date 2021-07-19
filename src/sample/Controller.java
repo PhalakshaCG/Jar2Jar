@@ -38,8 +38,12 @@ public class Controller implements Initializable {
     @FXML
     public void fetchMessage(ActionEvent e) {
         messengerThread = new Thread(() -> {
+            String previousText = messageFetched.getText();
             messageFetched.setText(instance.fetchMessage());
-            messageStatus.setText("Message received!");
+            if(messageFetched.getText().equals("ping"))
+                messageStatus.setText("Connected");
+            else if(!messageFetched.getText().equals(previousText))
+                messageStatus.setText("Message received!");
         });
         messengerThread.start();
     }
@@ -49,8 +53,9 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Thread fetcher = new Thread(() -> {
             while(true){
+                String previousText = messageFetched.getText();
                 messageFetched.setText(instance.fetchMessage());
-                messageStatus.setText("Message received!");
+                messageStatus.setText("Connected");
             }
         });
         fetcher.setDaemon(true);
