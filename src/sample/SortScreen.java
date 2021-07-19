@@ -75,9 +75,8 @@ public class SortScreen implements Initializable {
         Runnable fetchFunction = () -> {
             while (!isConnected) {
                 try {
-                    array = convertToIntArray(resourceSharer.fetchMessage());
-                    initScrollPane(unsortedArrayPane);
-                    isConnected = true;
+                    String message = resourceSharer.fetchMessage());
+                    System.out.println(message);
                 }catch (Exception ignored){}
             }
         };
