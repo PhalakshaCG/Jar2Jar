@@ -13,11 +13,16 @@ import java.util.Objects;
 public class HomeScreen {
     @FXML
     public void MessageInterface(ActionEvent e) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MessagePage.fxml")));
+        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("MessagePage.fxml")));
+        Parent root = loader.load();
         Stage stage = new Stage();
         stage.setTitle("Jar2Jar");
         stage.setScene(new Scene(root));
         stage.show();
+        stage.setOnCloseRequest(windowEvent -> {
+            Controller controller = loader.getController();
+            controller.closeWindow();
+        });
     }
     @FXML
     public void ConfigureInterface(ActionEvent e) throws IOException {
