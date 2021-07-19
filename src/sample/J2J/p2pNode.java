@@ -45,12 +45,12 @@ public class p2pNode {
         switch (mode){
             case CLIENT -> {
                 try{
-                    message = client.sendToServer(client.receiveFromServer());
+                    message = client.sendToServer(client.getData());
                 } catch (IOException ignored) {}
             }
             case SERVER -> {
                 try {
-                    message = server.sendToClient(server.receiveFromClient());
+                    message = server.sendToClient(server.getData());
                 } catch (IOException ignored){}
             }
             case NULL -> message = "No message sent";
