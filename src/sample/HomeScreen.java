@@ -8,9 +8,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
+import sample.SorterStack.MergeSort;
+import sample.SorterStack.Sorter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
 
 public class HomeScreen {
     @FXML
@@ -37,6 +41,14 @@ public class HomeScreen {
     @FXML
     public void ConfigureInterface(ActionEvent e) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ConfigurePage.fxml")));
+        Stage stage = new Stage();
+        stage.setTitle("Configure");
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+    @FXML
+    void SorterInterface(ActionEvent e) throws IOException {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sort_screen.fxml")));
         Stage stage = new Stage();
         stage.setTitle("Configure");
         stage.setScene(new Scene(root));

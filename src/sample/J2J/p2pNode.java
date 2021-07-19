@@ -21,25 +21,26 @@ public class p2pNode {
 
     }
 
-    public void connectToPeer() {
+    public boolean connectToPeer() {
         try {
             client.sendToServer(sendMessage);
             System.out.println("Client mode");
             mode = Mode.CLIENT;
+            isConnected = true;
         } catch (IOException e1) {
             try {
                 server.sendToClient(sendMessage);
                 System.out.println("Server mode");
                 mode = Mode.SERVER;
+                isConnected = true;
             } catch (IOException e2) {
                 //System.out.println("Node not found");
                 isConnected = false;
                 mode = Mode.NULL;
             }
-        }finally {
-            isConnected = true;
             //System.out.println("Connected");
         }
+        return isConnected;
     }
 
     public String fetchMessage(){

@@ -23,7 +23,7 @@
             <Font size="18.0" />
          </font>
       </Button>
-      <Button layoutX="174.0" layoutY="155.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="112.0" text="Compute">
+      <Button layoutX="174.0" layoutY="155.0" mnemonicParsing="false" onAction="#SorterInterface" prefHeight="50.0" prefWidth="112.0" text="Compute">
          <font>
             <Font size="18.0" />
          </font>

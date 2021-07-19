@@ -6,7 +6,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.text.Text;
-import javafx.stage.WindowEvent;
 import sample.J2J.*;
 import sample.J2J.ClientServerStack.BaseNode;
 
