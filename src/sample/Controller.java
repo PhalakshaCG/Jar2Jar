@@ -39,25 +39,22 @@ public class Controller implements Initializable {
     @FXML
     public void fetchMessage(ActionEvent e) {
         messengerThread = new Thread(() -> {
-            String previousText = messageFetched.getText();
             messageFetched.setText(p2pInstance.fetchMessage());
-            if(messageFetched.getText().equals("ping"))
-                messageStatus.setText("Connected");
-            else if(!messageFetched.getText().equals(previousText))
-                messageStatus.setText("Message received!");
+            messageStatus.setText("Connected");
         });
         messengerThread.start();
     }
 
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) throws NullPointerException{
         p2pInstance = new p2pNode(new BaseNode().getPortNumber(),new BaseNode().getIPAddress());
         fetcherThread = new Thread(() -> {
-            while(true){
-                String previousText = messageFetched.getText();
-                messageFetched.setText(p2pInstance.fetchMessage());
-                messageStatus.setText("Connected");
+            while (true) {
+                try {
+                    messageFetched.setText(p2pInstance.fetchMessage());
+                    messageStatus.setText("Connected");
+                }catch (NullPointerException ignored){}
             }
         });
         fetcherThread.setDaemon(true);
