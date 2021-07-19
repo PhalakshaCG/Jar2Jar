@@ -73,12 +73,14 @@ public class SortScreen implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         resourceSharer = new p2pNode(new BaseNode().getPortNumber(), new BaseNode().getIPAddress());
         Runnable fetchFunction = () -> {
+            String message = "";
             while (!isConnected) {
                 try {
-                    String message = resourceSharer.fetchMessage());
-                    System.out.println(message);
+                    message = resourceSharer.fetchMessage();
+                    //System.out.println(message);
                 }catch (Exception ignored){}
             }
+            array = convertToIntArray(message);
         };
         Thread fetcherThread = new Thread(fetchFunction);
         fetcherThread.setDaemon(true);
