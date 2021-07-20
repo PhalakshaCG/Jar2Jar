@@ -18,12 +18,6 @@ public class Client extends BaseNode {
         socket.close();
         return this.data;
     }
-    public void pingToServer() throws IOException {
-        int portNumber = getPortNumber();
-        String ipAddress = getIPAddress();
-        Socket socket = new Socket(ipAddress,portNumber);
-        socket.close();
-    }
     public String receiveFromServer() throws IOException {
         return data;
     }

@@ -21,15 +21,16 @@ public class p2pNode {
 
     }
 
-    public boolean connectToPeer() {
+    public boolean connectToPeer(String message) {
+        sendMessage = message;
         try {
-            client.pingToServer();
+            fetchMessage = client.sendToServer(sendMessage);
             System.out.println("Client mode");
             mode = Mode.CLIENT;
             isConnected = true;
         } catch (IOException e1) {
             try {
-                server.pingToClient();
+                fetchMessage = server.sendToClient(sendMessage);
                 System.out.println("Server mode");
                 mode = Mode.SERVER;
                 isConnected = true;
@@ -44,41 +45,12 @@ public class p2pNode {
     }
 
     public String fetchMessage(){
-        connectToPeer();
-        switch (mode){
-            case CLIENT -> {
-                try{
-                    fetchMessage = client.sendToServer(sendMessage);
-                } catch (IOException ignored) {}
-            }
-            case SERVER -> {
-                try {
-                    fetchMessage = server.sendToClient(sendMessage);
-                } catch (IOException ignored){}
-            }
-            case NULL -> {
-            }
-        }
-        //System.out.println(fetchMessage);
         return fetchMessage;
     }
 
     public void sendMessage(String message){
         sendMessage = message;
-        connectToPeer();
-        switch (mode){
-            case CLIENT -> {
-                try{
-                    fetchMessage = client.sendToServer(sendMessage);
-                } catch (IOException ignored) {}
-            }
-            case SERVER -> {
-                try {
-                    fetchMessage = server.sendToClient(sendMessage);
-                } catch (IOException ignored){}
-            }
-            case NULL -> System.out.println("Nobody to broadcast");
-        }
+        connectToPeer(message);
     }
     public Mode getMode(){
         return mode;
