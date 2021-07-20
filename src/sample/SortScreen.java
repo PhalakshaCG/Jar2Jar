@@ -49,13 +49,11 @@ public class SortScreen implements Initializable {
         System.out.println(Arrays.toString(sharedArray));
         arrayText.setText(Arrays.toString(fullArray));
         infoText.setText("Random numbers generated!");
-        connectionThread = new Thread(()->{
+        if(enableSync.isSelected()){
             resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.UN_SORTED));
             infoText.setText("Connected!");
             isConnected = true;
-        });
-        connectionThread.setDaemon(true);
-        connectionThread.start();
+        }
     }
 
     @FXML
@@ -74,25 +72,25 @@ public class SortScreen implements Initializable {
 
     @FXML
     public void performSort(){
+        totalTimeTaken = 0;
         if(enableSync.isSelected()){
-            localSort = new Thread(()->{
-                long startTime1 = System.nanoTime();
-                primaryArray = new MergeSort().sortArray(primaryArray);
-                System.out.println("Sorted: " + Arrays.toString(primaryArray));
-                long endTime1 = System.nanoTime();
-                resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
-                totalTimeTaken = (endTime1 - startTime1);
-            });
-            localSort.start();
+            long startTime1 = System.nanoTime();
+            primaryArray = new MergeSort().sortArray(primaryArray);
+            System.out.println("Sorted locally: " + Arrays.toString(primaryArray));
+            long endTime1 = System.nanoTime();
 
-            peerSort = new Thread(()->{
-                long startTime2 = System.nanoTime();
-                resourceSharer.sendMessage(arrayToSend(new int[]{1},SortStatus.TO_BE_SORTED));
-                sharedArray = convertToIntArray(resourceSharer.fetchMessage());
-                long endTime2 = System.nanoTime();
-                System.out.println(endTime2 - startTime2);
-            });
-            peerSort.start();
+            resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
+            totalTimeTaken += (endTime1 - startTime1);
+            resourceSharer.sendMessage(arrayToSend(new int[]{1},SortStatus.TO_BE_SORTED));
+
+            sharedArray = convertToIntArray(resourceSharer.fetchMessage());
+            System.out.println("Sorted externally: " + Arrays.toString(primaryArray));
+            long startTime2 = System.nanoTime();
+            new MergeSort().merge(primaryArray,sharedArray);
+            long endTime2 = System.nanoTime();
+            totalTimeTaken += endTime2 - startTime2;
+            System.out.println(endTime2 - startTime2);
+            resourceSharer.sendMessage(arrayToSend(new MergeSort().merge(primaryArray,sharedArray),SortStatus.UN_SORTED));
         }
         else{
             long startTime = System.nanoTime();
