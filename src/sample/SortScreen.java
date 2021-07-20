@@ -139,7 +139,10 @@ public class SortScreen implements Initializable {
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())){
                         sharedArray = temporarySharedArray;
-                        arrayText.setText(Arrays.toString(new MergeSort().merge(primaryArray,sharedArray)));
+                        int[] fullArray = new MergeSort().merge(primaryArray,sharedArray))
+                        arrayText.setText(Arrays.toString(fullArray));
+                        resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.UN_SORTED));
+
                     }
                 }catch (NumberFormatException ignored){}
             }
