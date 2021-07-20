@@ -15,7 +15,15 @@
             <Font size="41.0" />
          </font>
       </Text>
-      <ScrollPane fx:id="unsortedArrayPane" hbarPolicy="NEVER" layoutY="96.0" prefHeight="116.0" prefWidth="452.0" />
+      <ScrollPane fx:id="unsortedArrayPane" hbarPolicy="NEVER" layoutY="96.0" prefHeight="116.0" prefWidth="452.0">
+         <content>
+            <Text fx:id="unsortedNumberList" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="448.2060546875">
+               <font>
+                  <Font name="Monaco" size="13.0" />
+               </font>
+            </Text>
+         </content>
+      </ScrollPane>
       <ScrollPane fx:id="sortedArrayPane" hbarPolicy="NEVER" layoutY="284.0" prefHeight="116.0" prefWidth="452.0" />
       <Text layoutX="6.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Unsorted array">
          <font>

@@ -12,7 +12,6 @@ import sample.J2J.p2pNode;
 import sample.SorterStack.MergeSort;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class SortScreen implements Initializable {
@@ -20,6 +19,9 @@ public class SortScreen implements Initializable {
     int[] array;
     p2pNode resourceSharer;
     boolean isConnected = false;
+
+    @FXML
+    Text unsortedNumberList;
 
     @FXML
     ScrollPane unsortedArrayPane;
@@ -36,13 +38,18 @@ public class SortScreen implements Initializable {
         array = new MergeSort().generateRandomArray(100,1000);
         initScrollPane(unsortedArrayPane);
         infoText.setText("Random numbers generated!");
+        new Thread(()->{
+            resourceSharer.sendMessage(Arrays.toString(array));
+            infoText.setText("Connected!");
+            isConnected = true;
+        }).start();
     }
 
     @FXML
     public void establishConnection(){
         new Thread(()->{
-            if(array != null)
-                resourceSharer.sendMessage(Arrays.toString(array));
+            String message = resourceSharer.fetchMessage();
+            array = convertToIntArray(message);
             infoText.setText("Connected!");
             isConnected = true;
         }).start();
@@ -61,30 +68,18 @@ public class SortScreen implements Initializable {
     }
 
     private int[] convertToIntArray(String strArr) throws NumberFormatException{
-        List<String> arrList = Arrays.asList(strArr.substring(1,strArr.length() - 1).split(", "));
-        int[] arr = new int[arrList.size()];
+        String[] arrOfStr = strArr.substring(1,strArr.length() - 1).split(", ");
+        int[] arr = new int[arrOfStr.length];
         for(int i = 0; i < arr.length; i++){
-            arr[i] = Integer.parseInt(arrList.get(i));
+            arr[i] = Integer.parseInt(arrOfStr[i]);
         }
         return arr;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        unsortedNumberList.setFont(Font.font("Monaco",12));
         resourceSharer = new p2pNode(new BaseNode().getPortNumber(), new BaseNode().getIPAddress());
-        Runnable fetchFunction = () -> {
-            String message = "";
-            while (!isConnected) {
-                try {
-                    message = resourceSharer.fetchMessage();
-                    //System.out.println(message);
-                }catch (Exception ignored){}
-            }
-            array = convertToIntArray(message);
-        };
-        Thread fetcherThread = new Thread(fetchFunction);
-        fetcherThread.setDaemon(true);
-        fetcherThread.start();
     }
 
     private int[] syncSort(){
@@ -98,17 +93,16 @@ public class SortScreen implements Initializable {
             arrayToSort = new int[array.length - array.length/2];
             System.arraycopy(array,array.length/2,arrayToSort,0,arrayToSort.length);
         }
+        System.out.println(Arrays.toString(arrayToSort));
         resourceSharer.sendMessage(Arrays.toString(arrayToSort));
         int[] sortedArray = convertToIntArray(resourceSharer.fetchMessage());
         return new MergeSort().merge(arrayToSort,sortedArray);
     }
 
     private void initScrollPane(ScrollPane numberPane){
-        Text listOfNumbers = new Text();
         String stringArray = Arrays.toString(array);
-        listOfNumbers.setFont(Font.font("Monaco",12));
-        listOfNumbers.setWrappingWidth(numberPane.getWidth());
-        listOfNumbers.setText(stringArray.substring(1,stringArray.length() - 1));
-        numberPane.setContent(listOfNumbers);
+        unsortedNumberList.setFont(Font.font("Monaco",12));
+        unsortedNumberList.setWrappingWidth(numberPane.getWidth());
+        unsortedNumberList.setText(stringArray.substring(1,stringArray.length() - 1));
     }
 }
