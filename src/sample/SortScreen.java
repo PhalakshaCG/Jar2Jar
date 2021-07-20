@@ -166,10 +166,8 @@ public class SortScreen implements Initializable {
         syncThread.start();
 
         portSelector = new Thread(() -> {
-            while (true){
-                String portNum = Integer.toString((int)Math.floor(Math.random()*10000 + 10));
-                portSharing.sendMessage(portNum);
-            }
+            String portNum = Integer.toString((int)Math.floor(Math.random()*10000 + 10));
+            portSharing.sendMessage(portNum);
         });
         portSelector.setDaemon(true);
         portSelector.start();
