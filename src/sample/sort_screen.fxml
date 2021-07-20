@@ -16,7 +16,7 @@
       </Text>
       <ScrollPane hbarPolicy="NEVER" layoutY="96.0" prefHeight="116.0" prefWidth="452.0">
          <content>
-            <Text fx:id="unsortedArray" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="440.2060546875">
+            <Text fx:id="unsortedArrayText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="440.2060546875">
                <font>
                   <Font name="Monaco" size="13.0" />
                </font></Text>
@@ -24,7 +24,7 @@
       </ScrollPane>
       <ScrollPane hbarPolicy="NEVER" layoutY="284.0" prefHeight="116.0" prefWidth="452.0">
          <content>
-            <Text fx:id="sortedArray" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="440.2060546875">
+            <Text fx:id="sortedArrayText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="440.2060546875">
                <font>
                   <Font name="Monaco" size="13.0" />
                </font>

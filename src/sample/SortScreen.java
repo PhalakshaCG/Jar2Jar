@@ -3,8 +3,6 @@ package sample;
 import javafx.fxml.FXML;
 
 import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import sample.J2J.ClientServerStack.BaseNode;
 import sample.J2J.Mode;
@@ -16,17 +14,21 @@ import java.util.ResourceBundle;
 
 public class SortScreen implements Initializable {
 
-    int[] array;
+    int[] primaryArray = null;
+    int[] sharedArray = null;
+
     p2pNode resourceSharer;
     boolean isConnected = false;
+    boolean isSorterHost = false;
 
     Thread connectionThread;
+    Thread syncThread;
 
     @FXML
-    Text unsortedArray;
+    Text unsortedArrayText;
 
     @FXML
-    Text sortedArray;
+    Text sortedArrayText;
 
     @FXML
     Text infoText;
@@ -34,13 +36,14 @@ public class SortScreen implements Initializable {
     @FXML
     public void generateRandomNumbers(){
         isConnected = false;
-        array = new MergeSort().generateRandomArray(100,1000);
-        unsortedArray.setText(convertToStrArray(array));
+        primaryArray = new MergeSort().generateRandomArray(100,1000);
+        unsortedArrayText.setText(convertToStrArray(primaryArray));
         infoText.setText("Random numbers generated!");
         connectionThread = new Thread(()->{
-            resourceSharer.sendMessage(Arrays.toString(array));
+            resourceSharer.sendMessage(Arrays.toString(primaryArray));
             infoText.setText("Connected!");
             isConnected = true;
+            syncThread.start();
         });
         connectionThread.setDaemon(true);
         connectionThread.start();
@@ -50,11 +53,13 @@ public class SortScreen implements Initializable {
     public void establishConnection(){
         connectionThread = new Thread(()->{
             String message = resourceSharer.fetchMessage();
-            array = convertToIntArray(message);
+            primaryArray = convertToIntArray(message);
             infoText.setText("Connected!");
             isConnected = true;
-            if(array != null)
-                unsortedArray.setText(convertToStrArray(array));
+            if(primaryArray != null){
+                unsortedArrayText.setText(convertToStrArray(primaryArray));
+                syncThread.start();
+            }
         });
         connectionThread.setDaemon(true);
         connectionThread.start();
@@ -62,13 +67,16 @@ public class SortScreen implements Initializable {
 
     @FXML
     public void performSort(){
+        isSorterHost = true;
         if(isConnected){
-            array = syncSort();
+            syncThread.interrupt();
+            primaryArray = syncSort();
+            resourceSharer.sendMessage(Arrays.toString(primaryArray));
         }
         else{
-            array = new MergeSort().sortArray(array);
+            primaryArray = new MergeSort().sortArray(primaryArray);
         }
-        sortedArray.setText(convertToStrArray(array));
+        sortedArrayText.setText(convertToStrArray(primaryArray));
         infoText.setText("Sorted!");
     }
 
@@ -84,23 +92,33 @@ public class SortScreen implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         resourceSharer = new p2pNode(new BaseNode().getPortNumber(), new BaseNode().getIPAddress());
+
+        syncThread = new Thread(()->{
+            while(sharedArray == null){
+                try{
+                    String sharedStrArray = resourceSharer.fetchMessage();
+                    System.out.println(sharedStrArray);
+                    sharedArray = convertToIntArray(sharedStrArray);
+                }catch (NumberFormatException ignored){}
+            }
+            primaryArray = syncSort();
+            sortedArrayText.setText(convertToStrArray(new MergeSort().merge(primaryArray,sharedArray)));
+        });
+        syncThread.setDaemon(true);
     }
 
     private int[] syncSort(){
-        int[] arrayToSort = array;
+        int[] arrayToSort = primaryArray;
         if(resourceSharer.getMode() == Mode.CLIENT){
-            arrayToSort = new int[array.length/2];
-            System.arraycopy(array,0,arrayToSort,0,arrayToSort.length);
+            arrayToSort = new int[primaryArray.length/2];
+            System.arraycopy(primaryArray,0,arrayToSort,0,arrayToSort.length);
             arrayToSort = new MergeSort().sortArray(arrayToSort);
         }
         else if(resourceSharer.getMode() == Mode.SERVER){
-            arrayToSort = new int[array.length - array.length/2];
-            System.arraycopy(array,array.length/2,arrayToSort,0,arrayToSort.length);
+            arrayToSort = new int[primaryArray.length - primaryArray.length/2];
+            System.arraycopy(primaryArray, primaryArray.length/2,arrayToSort,0,arrayToSort.length);
         }
-        System.out.println(Arrays.toString(arrayToSort));
-        resourceSharer.sendMessage(Arrays.toString(arrayToSort));
-        int[] sortedArray = convertToIntArray(resourceSharer.fetchMessage());
-        return new MergeSort().merge(arrayToSort,sortedArray);
+        return arrayToSort;
     }
 
     private String convertToStrArray(int[] array){
