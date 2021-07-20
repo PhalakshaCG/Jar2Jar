@@ -19,7 +19,6 @@ public class SortScreen implements Initializable {
 
     p2pNode resourceSharer;
     boolean isConnected = false;
-    boolean isSorterHost = false;
 
     Thread connectionThread;
     Thread syncThread;
@@ -36,7 +35,7 @@ public class SortScreen implements Initializable {
     @FXML
     public void generateRandomNumbers(){
         isConnected = false;
-        primaryArray = new MergeSort().generateRandomArray(10,1000);
+        primaryArray = new MergeSort().generateRandomArray(20,1000);
         arrayText.setText(Arrays.toString(primaryArray));
         infoText.setText("Random numbers generated!");
         connectionThread = new Thread(()->{
@@ -57,6 +56,7 @@ public class SortScreen implements Initializable {
         }
         else{
             isConnected = true;
+            syncThread = new Thread(syncRunnable);
             syncThread.start();
         }
     }
