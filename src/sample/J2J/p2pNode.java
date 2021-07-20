@@ -45,6 +45,7 @@ public class p2pNode {
     }
 
     public String fetchMessage(){
+        connectToPeer(sendMessage);
         return fetchMessage;
     }
 
