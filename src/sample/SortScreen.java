@@ -55,8 +55,7 @@ public class SortScreen implements Initializable {
             isConnected = true;
         });
         connectionThread.setDaemon(true);
-        if(enableSync.isSelected())
-            connectionThread.start();
+        connectionThread.start();
     }
 
     @FXML
