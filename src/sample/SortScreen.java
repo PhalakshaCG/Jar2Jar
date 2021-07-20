@@ -22,7 +22,6 @@ public class SortScreen implements Initializable {
 
     p2pNode resourceSharer;
     long totalTimeTaken;
-    boolean isSorted = false;
 
     Thread connectionThread;
     Thread syncThread;
@@ -41,7 +40,6 @@ public class SortScreen implements Initializable {
     @FXML
     public void generateRandomNumbers(){
         stopThreads();
-        boolean isSorted = false;
         int[] fullArray = new MergeSort().generateRandomArray(new PrefWriter().getLength(),new PrefWriter().getRange());
         primaryArray = synchroniseArrays(fullArray,true);
         System.out.println(Arrays.toString(primaryArray));
