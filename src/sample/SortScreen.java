@@ -83,7 +83,7 @@ public class SortScreen implements Initializable {
                 primaryArray = new MergeSort().sortArray(primaryArray);
                 long endTime1 = System.nanoTime();
                 resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
-                totalTimeTaken = (startTime1 - endTime1);
+                totalTimeTaken = (endTime1 - startTime1);
             });
             localSort.start();
 
