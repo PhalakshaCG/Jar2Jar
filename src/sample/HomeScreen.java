@@ -48,6 +48,14 @@ public class HomeScreen {
         Parent root = loader.load();
         Stage stage = new Stage();
         stage.setTitle("Configure");
+        Scene scene = new Scene(root);
+        scene.addEventHandler(KeyEvent.KEY_PRESSED,(keyEvent) -> {
+            //System.out.println(keyEvent.getCode().toString());
+            if(keyEvent.getCode().toString().equals("ENTER")){
+                SortScreen sortScreen = loader.getController();
+                sortScreen.stopThreads();
+            }
+        });
         stage.setScene(new Scene(root));
         stage.show();
         stage.setOnCloseRequest(windowEvent -> {
