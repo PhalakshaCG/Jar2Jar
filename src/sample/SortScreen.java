@@ -109,8 +109,8 @@ public class SortScreen implements Initializable {
                         arrayText.setText(Arrays.toString(sharedArray));
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.TO_BE_SORTED.toString())){
-                        primaryArray = new MergeSort().sortArray(sharedArray);
-                        resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
+                        sharedArray = new MergeSort().sortArray(sharedArray);
+                        resourceSharer.sendMessage(arrayToSend(sharedArray,SortStatus.IS_SORTED));
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())){
                         primaryArray = new MergeSort().merge(primaryArray,sharedArray);
