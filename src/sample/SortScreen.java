@@ -21,8 +21,8 @@ public class SortScreen implements Initializable {
     int[] sharedArray = null;
 
     p2pNode resourceSharer;
-    boolean isConnected = false;
     long totalTimeTaken;
+    boolean isSorted = false;
 
     Thread connectionThread;
     Thread syncThread;
@@ -41,7 +41,7 @@ public class SortScreen implements Initializable {
     @FXML
     public void generateRandomNumbers(){
         stopThreads();
-        isConnected = false;
+        boolean isSorted = false;
         int[] fullArray = new MergeSort().generateRandomArray(new PrefWriter().getLength(),new PrefWriter().getRange());
         primaryArray = synchroniseArrays(fullArray,true);
         System.out.println(Arrays.toString(primaryArray));
@@ -52,18 +52,15 @@ public class SortScreen implements Initializable {
         if(enableSync.isSelected()){
             resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.UN_SORTED));
             infoText.setText("Connected!");
-            isConnected = true;
         }
     }
 
     @FXML
     public void establishConnection(){
         if(!enableSync.isSelected()){
-            isConnected = false;
             syncThread.interrupt();
         }
         else{
-            isConnected = true;
             syncThread = new Thread(syncRunnable);
             syncThread.setDaemon(true);
             syncThread.start();
@@ -126,9 +123,10 @@ public class SortScreen implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         resourceSharer = new p2pNode(new BaseNode().getPortNumber(), new BaseNode().getIPAddress());
         syncRunnable = ()->{
-            while(enableSync.isSelected()){
+            while(enableSync.isSelected() && !isSorted){
                 try{
                     String sharedStrArray = resourceSharer.fetchMessage();
+                    System.out.println(sharedStrArray);
                     int[] temporarySharedArray = convertToIntArray(sharedStrArray);
 
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
@@ -137,9 +135,9 @@ public class SortScreen implements Initializable {
                         sharedArray = synchroniseArrays(temporarySharedArray,true);
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.TO_BE_SORTED.toString())){
-                        temporarySharedArray = new MergeSort().sortArray(temporarySharedArray);
+                        primaryArray = new MergeSort().sortArray(temporarySharedArray);
                         System.out.println("Sorted: " + Arrays.toString(primaryArray));
-                        resourceSharer.sendMessage(arrayToSend(temporarySharedArray,SortStatus.IS_SORTED));
+                        //resourceSharer.sendMessage(arrayToSend(temporarySharedArray,SortStatus.IS_SORTED));
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())){
                         sharedArray = temporarySharedArray;
@@ -148,6 +146,7 @@ public class SortScreen implements Initializable {
                         long endTime1 = System.nanoTime();
                         long mergeTime = endTime1 - startTime1;
                         totalTimeTaken += mergeTime;
+                        arrayText.setText(Arrays.toString(fullArray));
                         resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.UN_SORTED));
                     }
                 }catch (NumberFormatException ignored){}
