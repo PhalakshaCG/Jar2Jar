@@ -59,7 +59,7 @@ public class SortScreen implements Initializable {
             syncThread.interrupt();
         }
         else{
-            resourceSharer = new p2pNode(80,new BaseNode().getIPAddress());
+            resourceSharer = new p2pNode(6066,new BaseNode().getIPAddress());
             syncThread = new Thread(syncRunnable);
             syncThread.setDaemon(true);
             syncThread.start();
@@ -124,7 +124,7 @@ public class SortScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        resourceSharer = new p2pNode(new BaseNode().getPortNumber() + 1, new BaseNode().getIPAddress());
+        resourceSharer = new p2pNode(6066, new BaseNode().getIPAddress());
         syncRunnable = ()->{
             while(enableSync.isSelected()){
                 try{
