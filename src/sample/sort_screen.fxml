@@ -2,50 +2,38 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="452.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SortScreen">
+<AnchorPane prefHeight="291.0" prefWidth="452.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SortScreen">
    <children>
       <Text layoutX="166.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sorter">
          <font>
             <Font size="41.0" />
          </font>
       </Text>
-      <ScrollPane hbarPolicy="NEVER" layoutY="96.0" prefHeight="116.0" prefWidth="452.0">
+      <ScrollPane hbarPolicy="NEVER" layoutY="96.0" prefHeight="155.0" prefWidth="452.0">
          <content>
-            <Text fx:id="unsortedArrayText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="440.2060546875">
+            <Text fx:id="arrayText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="440.2060546875">
                <font>
                   <Font name="Monaco" size="13.0" />
                </font></Text>
          </content>
       </ScrollPane>
-      <ScrollPane hbarPolicy="NEVER" layoutY="284.0" prefHeight="116.0" prefWidth="452.0">
-         <content>
-            <Text fx:id="sortedArrayText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="440.2060546875">
-               <font>
-                  <Font name="Monaco" size="13.0" />
-               </font>
-            </Text>
-         </content></ScrollPane>
-      <Text layoutX="6.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Unsorted array">
+      <Text layoutX="14.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Array">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text layoutX="6.0" layoutY="279.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sorted array">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Text>
-      <ToolBar layoutY="212.0" prefHeight="40.0" prefWidth="452.0">
+      <ToolBar layoutY="251.0" prefHeight="40.0" prefWidth="452.0">
         <items>
           <Button mnemonicParsing="false" onAction="#generateRandomNumbers" text="Generate" />
-            <Button mnemonicParsing="false" onAction="#establishConnection" text="Connect" />
             <Button mnemonicParsing="false" onAction="#performSort" text="Sort" />
             <Text fx:id="infoText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="202.2060546875" />
+            <ToggleButton fx:id="enableSync" mnemonicParsing="false" onAction="#establishConnection" text="Synchronise" />
         </items>
       </ToolBar>
       <Text layoutX="160.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Network computation" />
