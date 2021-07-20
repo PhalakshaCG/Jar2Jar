@@ -87,9 +87,12 @@ public class SortScreen implements Initializable {
                 long endTime2 = System.nanoTime();
                 totalTimeTaken += endTime2 - startTime2;
 
-                System.out.println(endTime2 - startTime2);
-                resourceSharer.sendMessage(arrayToSend(sortedArray, SortStatus.UN_SORTED));
+                resourceSharer.sendMessage(arrayToSend(primaryArray, SortStatus.IS_SORTED));
                 arrayText.setText(Arrays.toString(sortedArray));
+
+                double timeToSort = (totalTimeTaken/1000.0);
+                infoText.setText("Time taken: " + timeToSort + "µs");
+
             }).start();
         }
         else{
@@ -99,9 +102,10 @@ public class SortScreen implements Initializable {
             arrayText.setText(Arrays.toString(new MergeSort().merge(primaryArray,sharedArray)));
             long endTime = System.nanoTime();
             totalTimeTaken = endTime - startTime;
+
+            double timeToSort = (totalTimeTaken/1000.0);
+            infoText.setText("Time taken: " + timeToSort + "µs");
         }
-        double timeToSort = (double) (totalTimeTaken/1000.0);
-        infoText.setText("Time taken: " + timeToSort + "ms");
 
     }
 
@@ -123,12 +127,16 @@ public class SortScreen implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         resourceSharer = new p2pNode(new BaseNode().getPortNumber(), new BaseNode().getIPAddress());
         syncRunnable = ()->{
-            while(enableSync.isSelected() && !isSorted){
+            while(enableSync.isSelected()){
                 try{
                     String sharedStrArray = resourceSharer.fetchMessage();
                     System.out.println(sharedStrArray);
                     int[] temporarySharedArray = convertToIntArray(sharedStrArray);
 
+                    if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
+                        arrayText.setText(Arrays.toString(temporarySharedArray));
+                        break;
+                    }
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
                         arrayText.setText(Arrays.toString(temporarySharedArray));
                         primaryArray = synchroniseArrays(temporarySharedArray,false);
@@ -147,7 +155,7 @@ public class SortScreen implements Initializable {
                         long mergeTime = endTime1 - startTime1;
                         totalTimeTaken += mergeTime;
                         arrayText.setText(Arrays.toString(fullArray));
-                        resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.UN_SORTED));
+                        resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.FULLY_SORTED));
                     }
                 }catch (NumberFormatException ignored){}
             }
