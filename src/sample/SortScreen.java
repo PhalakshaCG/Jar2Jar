@@ -132,6 +132,7 @@ public class SortScreen implements Initializable {
                     int[] temporarySharedArray = convertToIntArray(sharedStrArray);
 
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
+                        resourceSharer = new p2pNode(temporarySharedArray[0],new BaseNode().getIPAddress());
                         arrayText.setText(Arrays.toString(temporarySharedArray));
                         break;
                     }
@@ -154,6 +155,8 @@ public class SortScreen implements Initializable {
                         totalTimeTaken += mergeTime;
                         arrayText.setText(Arrays.toString(fullArray));
                         resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.FULLY_SORTED));
+                        resourceSharer = new p2pNode(fullArray[0],new BaseNode().getIPAddress());
+
                     }
                 }catch (NumberFormatException ignored){}
             }
