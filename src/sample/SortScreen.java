@@ -25,6 +25,8 @@ public class SortScreen implements Initializable {
 
     Thread connectionThread;
     Thread syncThread;
+    Thread localSort;
+    Thread peerSort;
     Runnable syncRunnable;
     @FXML
     Text arrayText;
@@ -71,19 +73,24 @@ public class SortScreen implements Initializable {
     @FXML
     public void performSort(){
         if(enableSync.isSelected()){
-            new Thread(()->{
-                long startTime = System.nanoTime();
-                System.out.println(Arrays.toString(primaryArray));
+            localSort = new Thread(()->{
+                long startTime1 = System.nanoTime();
+                //System.out.println(Arrays.toString(primaryArray));
                 primaryArray = new MergeSort().sortArray(primaryArray);
+                long endTime1 = System.nanoTime();
                 resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
-                long endTime = System.nanoTime();
-                System.out.println(endTime - startTime);
-            }).start();
+                System.out.println(endTime1 - startTime1);
+            });
+            localSort.start();
 
-            new Thread(()->{
+            peerSort = new Thread(()->{
+                long startTime2 = System.nanoTime();
                 resourceSharer.sendMessage(arrayToSend(new int[]{1},SortStatus.TO_BE_SORTED));
                 sharedArray = convertToIntArray(resourceSharer.fetchMessage());
-            }).start();
+                long endTime2 = System.nanoTime();
+                System.out.println(endTime2 - startTime2);
+            });
+            peerSort.start();
         }
         else{
             long startTime = System.nanoTime();
@@ -167,5 +174,9 @@ public class SortScreen implements Initializable {
             syncThread.interrupt();
         if(connectionThread != null && connectionThread.isAlive())
             connectionThread.interrupt();
+        if(peerSort != null && localSort != null){
+            peerSort.interrupt();
+            localSort.interrupt();
+        }
     }
 }
