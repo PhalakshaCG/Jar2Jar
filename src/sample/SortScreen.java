@@ -172,8 +172,8 @@ public class SortScreen implements Initializable {
             //String portNum = Integer.toString((int)Math.floor(Math.random()*10000 + 10));
             try {
                 int portNum = Integer.parseInt(portSharing.fetchMessage());
+                resourceSharer = new p2pNode(portNum,new BaseNode().getIPAddress());
             }catch (NumberFormatException ignored){}
-            resourceSharer = new p2pNode(portNum,new BaseNode().getIPAddress());
         });
         portSelector.setDaemon(true);
         portSelector.start();
