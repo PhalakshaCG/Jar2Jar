@@ -132,10 +132,6 @@ public class SortScreen implements Initializable {
 
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
                         arrayText.setText(Arrays.toString(temporarySharedArray));
-                        int[] portNum = {(int)Math.floor(Math.random()*10000 + 10)};
-                        resourceSharer.sendMessage(arrayToSend(portNum,SortStatus.PORT_UPDATE));
-                        resourceSharer = new p2pNode(portNum[0],new BaseNode().getIPAddress());
-                        System.out.println("New port: " + portNum[0]);
                         break;
                     }
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
