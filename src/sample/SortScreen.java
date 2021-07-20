@@ -76,12 +76,12 @@ public class SortScreen implements Initializable {
     public void performSort(){
         if(enableSync.isSelected()){
             localSort = new Thread(()->{
-                long startTime1 = System.currentTimeMillis();
-                //System.out.println(Arrays.toString(primaryArray));
+                long startTime1 = System.nanoTime();
                 primaryArray = new MergeSort().sortArray(primaryArray);
-                long endTime1 = System.currentTimeMillis();
+                System.out.println("Sorted: " + Arrays.toString(primaryArray));
+                long endTime1 = System.nanoTime();
                 resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
-                totalTimeTaken = (startTime1 - endTime1);
+                totalTimeTaken = (endTime1 - startTime1);
             });
             localSort.start();
 
@@ -102,7 +102,9 @@ public class SortScreen implements Initializable {
             long endTime = System.nanoTime();
             System.out.println(endTime - startTime);
         }
-        infoText.setText("Sorted!");
+        double timeToSort = (double) (totalTimeTaken/1000.0);
+        infoText.setText("Time taken: " + timeToSort + "ms");
+
     }
 
     private int[] convertToIntArray(String strArr) throws NumberFormatException{
@@ -135,16 +137,16 @@ public class SortScreen implements Initializable {
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.TO_BE_SORTED.toString())){
                         primaryArray = new MergeSort().sortArray(primaryArray);
+                        System.out.println("Sorted: " + Arrays.toString(primaryArray));
                         resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())){
                         sharedArray = temporarySharedArray;
-                        long startTime1 = System.currentTimeMillis();
+                        long startTime1 = System.nanoTime();
                         int[] fullArray = new MergeSort().merge(primaryArray,sharedArray);
-                        long endTime1 = System.currentTimeMillis();
-                        totalTimeTaken += endTime1 - startTime1;
-                        arrayText.setText(Arrays.toString(fullArray));
-                        infoText.setText("Time taken: " + totalTimeTaken + "ms");
+                        long endTime1 = System.nanoTime();
+                        long mergeTime = endTime1 - startTime1;
+                        totalTimeTaken += mergeTime;
                         resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.UN_SORTED));
                     }
                 }catch (NumberFormatException ignored){}
