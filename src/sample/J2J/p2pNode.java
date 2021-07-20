@@ -9,8 +9,8 @@ public class p2pNode {
     Client client;
     Server server;
     Mode mode;
-    String sendMessage = " ";
-    String fetchMessage = " ";
+    String sendMessage = "ping";
+    String fetchMessage = "ping";
 
     public p2pNode(int portNumber, String ipAddress){
         assert false;

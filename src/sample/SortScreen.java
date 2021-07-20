@@ -88,11 +88,13 @@ public class SortScreen implements Initializable {
     }
 
     private int[] convertToIntArray(String strArr) throws NumberFormatException{
+        System.out.println("String array: " + strArr);
         String[] arrOfStr = strArr.split(", ");
-        int[] arr = new int[arrOfStr.length];
-        for(int i = 0; i < arr.length - 2; i++){
+        int[] arr = new int[arrOfStr.length - 1];
+        for(int i = 0; i < arr.length; i++){
             arr[i] = Integer.parseInt(arrOfStr[i]);
         }
+        System.out.println("Converted array: " + Arrays.toString(arr));
         return arr;
     }
 
