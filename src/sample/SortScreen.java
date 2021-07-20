@@ -135,7 +135,6 @@ public class SortScreen implements Initializable {
 
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
                         arrayText.setText(Arrays.toString(temporarySharedArray));
-                        enableSync.setSelected(false);
                         break;
                     }
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
