@@ -42,7 +42,6 @@ public class SortScreen implements Initializable {
             resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.UN_SORTED));
             infoText.setText("Connected!");
             isConnected = true;
-            syncThread.start();
         });
         connectionThread.setDaemon(true);
         connectionThread.start();
@@ -84,7 +83,7 @@ public class SortScreen implements Initializable {
     }
 
     private int[] convertToIntArray(String strArr) throws NumberFormatException{
-        String[] arrOfStr = strArr.substring(1).split(", ");
+        String[] arrOfStr = strArr.split(", ");
         int[] arr = new int[arrOfStr.length];
         for(int i = 0; i < arr.length - 1; i++){
             arr[i] = Integer.parseInt(arrOfStr[i]);
