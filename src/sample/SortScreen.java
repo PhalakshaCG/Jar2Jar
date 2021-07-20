@@ -55,7 +55,8 @@ public class SortScreen implements Initializable {
             isConnected = true;
         });
         connectionThread.setDaemon(true);
-        connectionThread.start();
+        if(enableSync.isSelected())
+            connectionThread.start();
     }
 
     @FXML
@@ -65,6 +66,7 @@ public class SortScreen implements Initializable {
             syncThread.interrupt();
         }
         else{
+            resourceSharer = new p2pNode(new BaseNode().getPortNumber(), new BaseNode().getIPAddress());
             isConnected = true;
             syncThread = new Thread(syncRunnable);
             syncThread.setDaemon(true);
@@ -76,10 +78,10 @@ public class SortScreen implements Initializable {
     public void performSort(){
         if(enableSync.isSelected()){
             localSort = new Thread(()->{
-                long startTime1 = System.currentTimeMillis();
+                long startTime1 = System.nanoTime();
                 //System.out.println(Arrays.toString(primaryArray));
                 primaryArray = new MergeSort().sortArray(primaryArray);
-                long endTime1 = System.currentTimeMillis();
+                long endTime1 = System.nanoTime();
                 resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
                 totalTimeTaken = (startTime1 - endTime1);
             });
@@ -102,7 +104,7 @@ public class SortScreen implements Initializable {
             long endTime = System.nanoTime();
             System.out.println(endTime - startTime);
         }
-        infoText.setText("Sorted!");
+        infoText.setText("Time taken: " + totalTimeTaken/1000 + "µs");
     }
 
     private int[] convertToIntArray(String strArr) throws NumberFormatException{
@@ -139,12 +141,12 @@ public class SortScreen implements Initializable {
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())){
                         sharedArray = temporarySharedArray;
-                        long startTime1 = System.currentTimeMillis();
+                        long startTime1 = System.nanoTime();
                         int[] fullArray = new MergeSort().merge(primaryArray,sharedArray);
-                        long endTime1 = System.currentTimeMillis();
+                        long endTime1 = System.nanoTime();
                         totalTimeTaken += endTime1 - startTime1;
                         arrayText.setText(Arrays.toString(fullArray));
-                        infoText.setText("Time taken: " + totalTimeTaken + "ms");
+                        infoText.setText("Time taken: " + totalTimeTaken/1000 + "µs");
                         resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.UN_SORTED));
                     }
                 }catch (NumberFormatException ignored){}
