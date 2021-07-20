@@ -59,6 +59,7 @@ public class SortScreen implements Initializable {
             syncThread.interrupt();
         }
         else{
+            resourceSharer = new p2pNode(80,new BaseNode().getIPAddress());
             syncThread = new Thread(syncRunnable);
             syncThread.setDaemon(true);
             syncThread.start();
