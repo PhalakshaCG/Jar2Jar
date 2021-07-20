@@ -56,7 +56,7 @@ public class HomeScreen {
                 sortScreen.stopThreads();
             }
         });
-        stage.setScene(new Scene(root));
+        stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(windowEvent -> {
             SortScreen sortScreen = loader.getController();
