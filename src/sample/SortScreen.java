@@ -75,21 +75,25 @@ public class SortScreen implements Initializable {
         totalTimeTaken = 0;
         if(enableSync.isSelected()){
             syncThread.interrupt();
-            long startTime1 = System.nanoTime();
-            primaryArray = new MergeSort().sortArray(primaryArray);
-            System.out.println("Sorted locally: " + Arrays.toString(primaryArray));
-            long endTime1 = System.nanoTime();
-            resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
-            totalTimeTaken += (endTime1 - startTime1);
-            resourceSharer.sendMessage(arrayToSend(sharedArray,SortStatus.TO_BE_SORTED));
-            sharedArray = convertToIntArray(resourceSharer.fetchMessage());
-            System.out.println("Sorted externally: " + Arrays.toString(primaryArray));
-            long startTime2 = System.nanoTime();
-            new MergeSort().merge(primaryArray,sharedArray);
-            long endTime2 = System.nanoTime();
-            totalTimeTaken += endTime2 - startTime2;
-            System.out.println(endTime2 - startTime2);
-            resourceSharer.sendMessage(arrayToSend(new MergeSort().merge(primaryArray,sharedArray),SortStatus.UN_SORTED));
+            new Thread(() -> {
+                long startTime1 = System.nanoTime();
+                primaryArray = new MergeSort().sortArray(primaryArray);
+                System.out.println("Sorted locally: " + Arrays.toString(primaryArray));
+                long endTime1 = System.nanoTime();
+                totalTimeTaken += (endTime1 - startTime1);
+
+                resourceSharer.sendMessage(arrayToSend(sharedArray, SortStatus.TO_BE_SORTED));
+                System.out.println("Sorted externally: " + Arrays.toString(sharedArray));
+
+                long startTime2 = System.nanoTime();
+                int[] sortedArray = new MergeSort().merge(primaryArray, sharedArray);
+                long endTime2 = System.nanoTime();
+                totalTimeTaken += endTime2 - startTime2;
+
+                System.out.println(endTime2 - startTime2);
+                resourceSharer.sendMessage(arrayToSend(sortedArray, SortStatus.UN_SORTED));
+                arrayText.setText(Arrays.toString(sortedArray));
+            }).start();
         }
         else{
             long startTime = System.nanoTime();
@@ -97,7 +101,7 @@ public class SortScreen implements Initializable {
             sharedArray = new MergeSort().sortArray(sharedArray);
             arrayText.setText(Arrays.toString(new MergeSort().merge(primaryArray,sharedArray)));
             long endTime = System.nanoTime();
-            System.out.println(endTime - startTime);
+            totalTimeTaken = endTime - startTime;
         }
         double timeToSort = (double) (totalTimeTaken/1000.0);
         infoText.setText("Time taken: " + timeToSort + "ms");
