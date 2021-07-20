@@ -103,7 +103,7 @@ public class SortScreen implements Initializable {
             System.out.println(endTime - startTime);
         }
         double timeToSort = (double) (totalTimeTaken/1000.0);
-        infoText.setText("Time taken: " + timeToSort + "ms");
+        infoText.setText("Time taken: " + timeToSort + "µs");
 
     }
 
