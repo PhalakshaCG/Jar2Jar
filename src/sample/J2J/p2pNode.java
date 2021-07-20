@@ -45,7 +45,6 @@ public class p2pNode {
 
     public String fetchMessage(){
         String message = null;
-        connectToPeer();
         switch (mode){
             case CLIENT -> {
                 try{
@@ -65,7 +64,6 @@ public class p2pNode {
 
     public void sendMessage(String message){
         sendMessage = message;
-        connectToPeer();
         switch (mode){
             case CLIENT -> {
                 try{

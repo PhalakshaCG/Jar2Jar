@@ -65,12 +65,14 @@ public class SortScreen implements Initializable {
         if(isConnected){
             new Thread(()->{
                 primaryArray = synchroniseArrays(true);
+                System.out.println(Arrays.toString(primaryArray));
                 primaryArray = new MergeSort().sortArray(primaryArray);
                 resourceSharer.sendMessage(arrayToSend(sharedArray,SortStatus.IS_SORTED));
             }).start();
 
             new Thread(()->{
                 sharedArray = synchroniseArrays(false);
+                System.out.println(Arrays.toString(sharedArray));
                 resourceSharer.sendMessage(arrayToSend(sharedArray,SortStatus.TO_BE_SORTED));
                 sharedArray = convertToIntArray(resourceSharer.fetchMessage());
             }).start();

@@ -34,6 +34,7 @@ public class Controller implements Initializable, EventListener {
     @FXML
     public void sendMessage(ActionEvent e) {
         messengerThread = new Thread(() -> {
+            p2pInstance.connectToPeer();
             p2pInstance.sendMessage(messageToSend.getCharacters().toString());
             messageStatus.setText("Message sent!");
         });
