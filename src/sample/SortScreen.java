@@ -35,11 +35,15 @@ public class SortScreen implements Initializable {
     @FXML
     public void generateRandomNumbers(){
         isConnected = false;
-        primaryArray = new MergeSort().generateRandomArray(20,1000);
-        arrayText.setText(Arrays.toString(primaryArray));
+        int[] fullArray = new MergeSort().generateRandomArray(20,1000);
+        primaryArray = synchroniseArrays(fullArray,true);
+        System.out.println(Arrays.toString(primaryArray));
+        sharedArray = synchroniseArrays(fullArray, false);
+        System.out.println(Arrays.toString(sharedArray));
+        arrayText.setText(Arrays.toString(fullArray));
         infoText.setText("Random numbers generated!");
         connectionThread = new Thread(()->{
-            resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.UN_SORTED));
+            resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.UN_SORTED));
             infoText.setText("Connected!");
             isConnected = true;
         });
@@ -63,24 +67,22 @@ public class SortScreen implements Initializable {
 
     @FXML
     public void performSort(){
-        if(isConnected){
+        if(enableSync.isSelected()){
             new Thread(()->{
-                primaryArray = synchroniseArrays(true);
                 System.out.println(Arrays.toString(primaryArray));
                 primaryArray = new MergeSort().sortArray(primaryArray);
-                resourceSharer.sendMessage(arrayToSend(sharedArray,SortStatus.IS_SORTED));
+                resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
             }).start();
 
             new Thread(()->{
-                sharedArray = synchroniseArrays(false);
-                System.out.println(Arrays.toString(sharedArray));
-                resourceSharer.sendMessage(arrayToSend(sharedArray,SortStatus.TO_BE_SORTED));
+                resourceSharer.sendMessage(arrayToSend(new int[]{1},SortStatus.TO_BE_SORTED));
                 sharedArray = convertToIntArray(resourceSharer.fetchMessage());
             }).start();
         }
         else{
             primaryArray = new MergeSort().sortArray(primaryArray);
-            arrayText.setText(Arrays.toString(primaryArray));
+            sharedArray = new MergeSort().sortArray(sharedArray);
+            arrayText.setText(Arrays.toString(new MergeSort().merge(primaryArray,sharedArray)));
         }
         infoText.setText("Sorted!");
     }
@@ -88,7 +90,7 @@ public class SortScreen implements Initializable {
     private int[] convertToIntArray(String strArr) throws NumberFormatException{
         String[] arrOfStr = strArr.split(", ");
         int[] arr = new int[arrOfStr.length];
-        for(int i = 0; i < arr.length - 1; i++){
+        for(int i = 0; i < arr.length - 2; i++){
             arr[i] = Integer.parseInt(arrOfStr[i]);
         }
         return arr;
@@ -106,16 +108,19 @@ public class SortScreen implements Initializable {
             while(enableSync.isSelected()){
                 try{
                     String sharedStrArray = resourceSharer.fetchMessage();
-                    sharedArray = convertToIntArray(sharedStrArray);
+                    int[] temporarySharedArray = convertToIntArray(sharedStrArray);
 
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
-                        arrayText.setText(Arrays.toString(sharedArray));
+                        arrayText.setText(Arrays.toString(temporarySharedArray));
+                        primaryArray = synchroniseArrays(temporarySharedArray,false);
+                        sharedArray = synchroniseArrays(temporarySharedArray,true);
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.TO_BE_SORTED.toString())){
-                        primaryArray = new MergeSort().sortArray(sharedArray);
+                        primaryArray = new MergeSort().sortArray(primaryArray);
                         resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())){
+                        sharedArray = temporarySharedArray;
                         arrayText.setText(Arrays.toString(new MergeSort().merge(primaryArray,sharedArray)));
                     }
                 }catch (NumberFormatException ignored){}
@@ -126,7 +131,7 @@ public class SortScreen implements Initializable {
         syncThread.start();
     }
 
-    private int[] synchroniseArrays(boolean sortStarter){
+    private int[] synchroniseArrays(int[] primaryArray, boolean sortStarter){
         int[] arrayToSort;
         if(sortStarter){
             arrayToSort = new int[primaryArray.length/2];
