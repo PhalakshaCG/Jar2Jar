@@ -59,10 +59,10 @@ public class SortScreen implements Initializable {
             syncThread.interrupt();
         }
         else{
-            portSelector.interrupt();
+            /*portSelector.interrupt();
             int portNum = (int)Math.floor(Math.random()*10000 + 10);
             resourceSharer = new p2pNode(portNum,new BaseNode().getIPAddress());
-            portSharing.sendMessage(Integer.toString(portNum));
+            portSharing.sendMessage(Integer.toString(portNum));*/
             syncThread = new Thread(syncRunnable);
             syncThread.setDaemon(true);
             syncThread.start();
@@ -128,7 +128,7 @@ public class SortScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        portSharing = new p2pNode(6066, new BaseNode().getIPAddress());
+        resourceSharer = new p2pNode(6066, new BaseNode().getIPAddress());
         syncRunnable = ()->{
             while(enableSync.isSelected()){
                 try{
@@ -168,7 +168,7 @@ public class SortScreen implements Initializable {
         syncThread.setDaemon(true);
         syncThread.start();
 
-        portSelector = new Thread(() -> {
+        /*portSelector = new Thread(() -> {
             //String portNum = Integer.toString((int)Math.floor(Math.random()*10000 + 10));
             try {
                 int portNum = Integer.parseInt(portSharing.fetchMessage());
@@ -176,7 +176,7 @@ public class SortScreen implements Initializable {
             }catch (NumberFormatException ignored){}
         });
         portSelector.setDaemon(true);
-        portSelector.start();
+        portSelector.start();*/
     }
 
     private int[] synchroniseArrays(int[] primaryArray, boolean sortStarter){
