@@ -20,8 +20,7 @@ public class SortScreen implements Initializable {
     p2pNode resourceSharer;
     boolean isConnected = false;
 
-    @FXML
-    Text unsortedNumberList;
+    Thread connectionThread;
 
     @FXML
     ScrollPane unsortedArrayPane;
@@ -36,23 +35,29 @@ public class SortScreen implements Initializable {
     public void generateRandomNumbers(){
         isConnected = false;
         array = new MergeSort().generateRandomArray(100,1000);
-        initScrollPane(unsortedArrayPane);
+        initScrollPane(unsortedArrayPane,array);
         infoText.setText("Random numbers generated!");
-        new Thread(()->{
+        connectionThread = new Thread(()->{
             resourceSharer.sendMessage(Arrays.toString(array));
             infoText.setText("Connected!");
             isConnected = true;
-        }).start();
+        });
+        connectionThread.setDaemon(true);
+        connectionThread.start();
     }
 
     @FXML
     public void establishConnection(){
-        new Thread(()->{
+        connectionThread = new Thread(()->{
             String message = resourceSharer.fetchMessage();
             array = convertToIntArray(message);
             infoText.setText("Connected!");
             isConnected = true;
-        }).start();
+        });
+        connectionThread.setDaemon(true);
+        connectionThread.start();
+        if(array != null)
+            initScrollPane(unsortedArrayPane,array);
     }
 
     @FXML
@@ -63,7 +68,7 @@ public class SortScreen implements Initializable {
         else{
             array = new MergeSort().sortArray(array);
         }
-        initScrollPane(sortedArrayPane);
+        initScrollPane(sortedArrayPane,array);
         infoText.setText("Sorted!");
     }
 
@@ -78,7 +83,6 @@ public class SortScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        unsortedNumberList.setFont(Font.font("Monaco",12));
         resourceSharer = new p2pNode(new BaseNode().getPortNumber(), new BaseNode().getIPAddress());
     }
 
@@ -99,10 +103,12 @@ public class SortScreen implements Initializable {
         return new MergeSort().merge(arrayToSort,sortedArray);
     }
 
-    private void initScrollPane(ScrollPane numberPane){
+    private void initScrollPane(ScrollPane numberPane,int[] array){
+        Text numberList = new Text();
         String stringArray = Arrays.toString(array);
-        unsortedNumberList.setFont(Font.font("Monaco",12));
-        unsortedNumberList.setWrappingWidth(numberPane.getWidth());
-        unsortedNumberList.setText(stringArray.substring(1,stringArray.length() - 1));
+        numberList.setFont(Font.font("Monaco",12));
+        numberList.setWrappingWidth(numberPane.getWidth() - 5);
+        numberList.setText(stringArray.substring(1,stringArray.length() - 1));
+        numberPane.setContent(numberList);
     }
 }
