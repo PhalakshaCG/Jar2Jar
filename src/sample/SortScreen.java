@@ -74,15 +74,14 @@ public class SortScreen implements Initializable {
     public void performSort(){
         totalTimeTaken = 0;
         if(enableSync.isSelected()){
+            syncThread.interrupt();
             long startTime1 = System.nanoTime();
             primaryArray = new MergeSort().sortArray(primaryArray);
             System.out.println("Sorted locally: " + Arrays.toString(primaryArray));
             long endTime1 = System.nanoTime();
-
             resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
             totalTimeTaken += (endTime1 - startTime1);
-            resourceSharer.sendMessage(arrayToSend(new int[]{1},SortStatus.TO_BE_SORTED));
-
+            resourceSharer.sendMessage(arrayToSend(sharedArray,SortStatus.TO_BE_SORTED));
             sharedArray = convertToIntArray(resourceSharer.fetchMessage());
             System.out.println("Sorted externally: " + Arrays.toString(primaryArray));
             long startTime2 = System.nanoTime();
@@ -134,9 +133,9 @@ public class SortScreen implements Initializable {
                         sharedArray = synchroniseArrays(temporarySharedArray,true);
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.TO_BE_SORTED.toString())){
-                        primaryArray = new MergeSort().sortArray(primaryArray);
+                        temporarySharedArray = new MergeSort().sortArray(temporarySharedArray);
                         System.out.println("Sorted: " + Arrays.toString(primaryArray));
-                        resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
+                        resourceSharer.sendMessage(arrayToSend(temporarySharedArray,SortStatus.IS_SORTED));
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())){
                         sharedArray = temporarySharedArray;
