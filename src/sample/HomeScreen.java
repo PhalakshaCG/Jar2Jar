@@ -48,10 +48,15 @@ public class HomeScreen {
     }
     @FXML
     void SorterInterface(ActionEvent e) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sort_screen.fxml")));
+        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("sort_screen.fxml")));
+        Parent root = loader.load();
         Stage stage = new Stage();
         stage.setTitle("Configure");
         stage.setScene(new Scene(root));
         stage.show();
+        stage.setOnCloseRequest(windowEvent -> {
+            SortScreen sortScreen = loader.getController();
+            sortScreen.closeWindow();
+        });
     }
 }

@@ -8,6 +8,8 @@ import javafx.scene.text.Text;
 import sample.J2J.ClientServerStack.BaseNode;
 import sample.J2J.p2pNode;
 import sample.SorterStack.MergeSort;
+import sample.SorterStack.PrefWriter;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -35,7 +37,7 @@ public class SortScreen implements Initializable {
     @FXML
     public void generateRandomNumbers(){
         isConnected = false;
-        int[] fullArray = new MergeSort().generateRandomArray(20,1000);
+        int[] fullArray = new MergeSort().generateRandomArray(new PrefWriter().getLength(),new PrefWriter().getRange());
         primaryArray = synchroniseArrays(fullArray,true);
         System.out.println(Arrays.toString(primaryArray));
         sharedArray = synchroniseArrays(fullArray, false);
@@ -151,5 +153,10 @@ public class SortScreen implements Initializable {
         strArr = strArr.substring(1,strArr.length() - 1);
         strArr = strArr + ", " + status;
         return  strArr;
+    }
+
+    public void closeWindow(){
+        syncThread.interrupt();
+        connectionThread.interrupt();
     }
 }
