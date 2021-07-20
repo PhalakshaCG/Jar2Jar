@@ -70,14 +70,15 @@ public class SortScreen implements Initializable {
         isSorterHost = true;
         if(isConnected){
             syncThread.interrupt();
-            primaryArray = syncSort();
+            primaryArray = syncSort(isSorterHost);
             System.out.println(primaryArray.length);
             resourceSharer.sendMessage(Arrays.toString(primaryArray));
+            sharedArray = convertToIntArray(resourceSharer.fetchMessage());
         }
         else{
             primaryArray = new MergeSort().sortArray(primaryArray);
         }
-        sortedArrayText.setText(convertToStrArray(primaryArray));
+        sortedArrayText.setText(convertToStrArray(new MergeSort().merge(primaryArray,sharedArray)));
         infoText.setText("Sorted!");
     }
 
@@ -95,26 +96,30 @@ public class SortScreen implements Initializable {
         resourceSharer = new p2pNode(new BaseNode().getPortNumber(), new BaseNode().getIPAddress());
 
         syncThread = new Thread(()->{
+            System.out.println("Inside sync thread");
             while(sharedArray == null){
                 try{
                     String sharedStrArray = resourceSharer.fetchMessage();
                     sharedArray = convertToIntArray(sharedStrArray);
                 }catch (NumberFormatException ignored){}
             }
-            primaryArray = syncSort();
+            primaryArray = syncSort(isSorterHost);
+            System.out.println(primaryArray.length);
+            resourceSharer.sendMessage(Arrays.toString(primaryArray));
             sortedArrayText.setText(convertToStrArray(new MergeSort().merge(primaryArray,sharedArray)));
+            System.out.println("Finished sync thread");
         });
         syncThread.setDaemon(true);
     }
 
-    private int[] syncSort(){
+    private int[] syncSort(boolean isSorterHost){
         int[] arrayToSort = primaryArray;
-        if(resourceSharer.getMode() == Mode.CLIENT){
+        if(isSorterHost){
             arrayToSort = new int[primaryArray.length/2];
             System.arraycopy(primaryArray,0,arrayToSort,0,arrayToSort.length);
             arrayToSort = new MergeSort().sortArray(arrayToSort);
         }
-        else if(resourceSharer.getMode() == Mode.SERVER){
+        else {
             arrayToSort = new int[primaryArray.length - primaryArray.length/2];
             System.arraycopy(primaryArray, primaryArray.length/2,arrayToSort,0,arrayToSort.length);
         }
