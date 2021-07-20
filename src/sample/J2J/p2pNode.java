@@ -9,8 +9,8 @@ public class p2pNode {
     Client client;
     Server server;
     Mode mode;
-    String sendMessage = " ";
-    String fetchMessage = " ";
+    String sendMessage = "ping";
+    String fetchMessage = "ping";
 
     public p2pNode(int portNumber, String ipAddress){
         assert false;
@@ -21,16 +21,15 @@ public class p2pNode {
 
     }
 
-    public boolean connectToPeer(String message) {
-        sendMessage = message;
+    public boolean connectToPeer() {
         try {
-            fetchMessage = client.sendToServer(sendMessage);
+            client.sendToServer(sendMessage);
             System.out.println("Client mode");
             mode = Mode.CLIENT;
             isConnected = true;
         } catch (IOException e1) {
             try {
-                fetchMessage = server.sendToClient(sendMessage);
+                server.sendToClient(sendMessage);
                 System.out.println("Server mode");
                 mode = Mode.SERVER;
                 isConnected = true;
@@ -45,13 +44,41 @@ public class p2pNode {
     }
 
     public String fetchMessage(){
-        connectToPeer(sendMessage);
+        String message = null;
+        connectToPeer();
+        switch (mode){
+            case CLIENT -> {
+                try{
+                    fetchMessage = client.sendToServer(sendMessage);
+                } catch (IOException ignored) {}
+            }
+            case SERVER -> {
+                try {
+                    fetchMessage = server.sendToClient(sendMessage);
+                } catch (IOException ignored){}
+            }
+            case NULL -> message = "No message sent";
+        }
+        //System.out.println(fetchMessage);
         return fetchMessage;
     }
 
     public void sendMessage(String message){
         sendMessage = message;
-        connectToPeer(message);
+        connectToPeer();
+        switch (mode){
+            case CLIENT -> {
+                try{
+                    fetchMessage = client.sendToServer(sendMessage);
+                } catch (IOException ignored) {}
+            }
+            case SERVER -> {
+                try {
+                    fetchMessage = server.sendToClient(sendMessage);
+                } catch (IOException ignored){}
+            }
+            case NULL -> System.out.println("Nobody to broadcast");
+        }
     }
     public Mode getMode(){
         return mode;
