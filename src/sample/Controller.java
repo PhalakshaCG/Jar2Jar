@@ -54,7 +54,7 @@ public class Controller implements Initializable, EventListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) throws NullPointerException{
-        p2pInstance = new p2pNode(new BaseNode().getPortNumber(),new BaseNode().getIPAddress());
+        p2pInstance = new p2pNode(80,new BaseNode().getIPAddress());
         autoFetch.setSelected(true);
         fetchFunction = () -> {
             while (autoFetch.isSelected()) {
