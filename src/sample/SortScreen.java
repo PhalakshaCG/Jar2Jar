@@ -20,11 +20,12 @@ public class SortScreen implements Initializable {
     int[] sharedArray = null;
 
     p2pNode resourceSharer;
+    p2pNode portSharing;
     long totalTimeTaken;
 
     Thread connectionThread;
     Thread syncThread;
-    Thread localSort;
+    Thread portSelector;
     Thread peerSort;
     Runnable syncRunnable;
     @FXML
@@ -58,6 +59,7 @@ public class SortScreen implements Initializable {
             syncThread.interrupt();
         }
         else{
+            resourceSharer = new p2pNode(Integer.parseInt(portSharing.fetchMessage()),new BaseNode().getIPAddress());
             syncThread = new Thread(syncRunnable);
             syncThread.setDaemon(true);
             syncThread.start();
@@ -69,7 +71,7 @@ public class SortScreen implements Initializable {
         totalTimeTaken = 0;
         if(enableSync.isSelected()){
             syncThread.interrupt();
-            new Thread(() -> {
+            Thread peerSort = new Thread(() -> {
                 long startTime1 = System.nanoTime();
                 primaryArray = new MergeSort().sortArray(primaryArray);
                 System.out.println("Sorted locally: " + Arrays.toString(primaryArray));
@@ -90,7 +92,8 @@ public class SortScreen implements Initializable {
                 double timeToSort = (totalTimeTaken/1000.0);
                 infoText.setText("Time taken: " + timeToSort + "µs");
 
-            }).start();
+            });
+            peerSort.start();
         }
         else{
             long startTime = System.nanoTime();
@@ -122,7 +125,7 @@ public class SortScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        resourceSharer = new p2pNode(6066, new BaseNode().getIPAddress());
+        portSharing = new p2pNode(6066, new BaseNode().getIPAddress());
         syncRunnable = ()->{
             while(enableSync.isSelected()){
                 try{
@@ -155,16 +158,21 @@ public class SortScreen implements Initializable {
                         resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.FULLY_SORTED));
 
                     }
-                    else if(getStatus(sharedStrArray).equals(SortStatus.PORT_UPDATE.toString())) {
-                        resourceSharer = new p2pNode(temporarySharedArray[0], new BaseNode().getIPAddress());
-                        System.out.println("New port: " + temporarySharedArray[0]);
-                    }
                     }catch (NumberFormatException ignored){}
             }
         };
         syncThread = new Thread(syncRunnable);
         syncThread.setDaemon(true);
         syncThread.start();
+
+        portSelector = new Thread(() -> {
+            while (true){
+                String portNum = Integer.toString((int)Math.floor(Math.random()*10000 + 10));
+                portSharing.sendMessage(portNum);
+            }
+        });
+        portSelector.setDaemon(true);
+        portSelector.start();
     }
 
     private int[] synchroniseArrays(int[] primaryArray, boolean sortStarter){
@@ -192,9 +200,9 @@ public class SortScreen implements Initializable {
             syncThread.interrupt();
         if(connectionThread != null && connectionThread.isAlive())
             connectionThread.interrupt();
-        if(peerSort != null && localSort != null){
+        if(peerSort != null && portSelector != null){
             peerSort.interrupt();
-            localSort.interrupt();
+            portSelector.interrupt();
         }
     }
 }
