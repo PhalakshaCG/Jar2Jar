@@ -7,7 +7,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="452.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SortScreen">
    <children>
       <Text layoutX="166.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sorter">
@@ -15,8 +14,22 @@
             <Font size="41.0" />
          </font>
       </Text>
-      <ScrollPane fx:id="unsortedArrayPane" hbarPolicy="NEVER" layoutY="96.0" prefHeight="116.0" prefWidth="452.0" />
-      <ScrollPane fx:id="sortedArrayPane" hbarPolicy="NEVER" layoutY="284.0" prefHeight="116.0" prefWidth="452.0" />
+      <ScrollPane hbarPolicy="NEVER" layoutY="96.0" prefHeight="116.0" prefWidth="452.0">
+         <content>
+            <Text fx:id="unsortedArray" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="440.2060546875">
+               <font>
+                  <Font name="Monaco" size="13.0" />
+               </font></Text>
+         </content>
+      </ScrollPane>
+      <ScrollPane hbarPolicy="NEVER" layoutY="284.0" prefHeight="116.0" prefWidth="452.0">
+         <content>
+            <Text fx:id="sortedArray" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="440.2060546875">
+               <font>
+                  <Font name="Monaco" size="13.0" />
+               </font>
+            </Text>
+         </content></ScrollPane>
       <Text layoutX="6.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Unsorted array">
          <font>
             <Font size="18.0" />

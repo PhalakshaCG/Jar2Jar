@@ -23,10 +23,10 @@ public class SortScreen implements Initializable {
     Thread connectionThread;
 
     @FXML
-    ScrollPane unsortedArrayPane;
+    Text unsortedArray;
 
     @FXML
-    ScrollPane sortedArrayPane;
+    Text sortedArray;
 
     @FXML
     Text infoText;
@@ -35,7 +35,7 @@ public class SortScreen implements Initializable {
     public void generateRandomNumbers(){
         isConnected = false;
         array = new MergeSort().generateRandomArray(100,1000);
-        initScrollPane(unsortedArrayPane,array);
+        unsortedArray.setText(convertToStrArray(array));
         infoText.setText("Random numbers generated!");
         connectionThread = new Thread(()->{
             resourceSharer.sendMessage(Arrays.toString(array));
@@ -53,11 +53,11 @@ public class SortScreen implements Initializable {
             array = convertToIntArray(message);
             infoText.setText("Connected!");
             isConnected = true;
+            if(array != null)
+                unsortedArray.setText(convertToStrArray(array));
         });
         connectionThread.setDaemon(true);
         connectionThread.start();
-        if(array != null)
-            initScrollPane(unsortedArrayPane,array);
     }
 
     @FXML
@@ -68,7 +68,7 @@ public class SortScreen implements Initializable {
         else{
             array = new MergeSort().sortArray(array);
         }
-        initScrollPane(sortedArrayPane,array);
+        sortedArray.setText(convertToStrArray(array));
         infoText.setText("Sorted!");
     }
 
@@ -103,12 +103,8 @@ public class SortScreen implements Initializable {
         return new MergeSort().merge(arrayToSort,sortedArray);
     }
 
-    private void initScrollPane(ScrollPane numberPane,int[] array){
-        Text numberList = new Text();
-        String stringArray = Arrays.toString(array);
-        numberList.setFont(Font.font("Monaco",12));
-        numberList.setWrappingWidth(numberPane.getWidth() - 5);
-        numberList.setText(stringArray.substring(1,stringArray.length() - 1));
-        numberPane.setContent(numberList);
+    private String convertToStrArray(int[] array){
+        String strArr = Arrays.toString(array);
+        return strArr.substring(1,strArr.length() - 1);
     }
 }
