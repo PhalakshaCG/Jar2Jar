@@ -101,9 +101,8 @@ public class SortScreen implements Initializable {
             arrayText.setText(Arrays.toString(new MergeSort().merge(primaryArray,sharedArray)));
             long endTime = System.nanoTime();
             System.out.println(endTime - startTime);
-        }
-        double timeToSort = (double) (totalTimeTaken/1000.0);
-        infoText.setText("Time taken: " + timeToSort + "ms");
+        };
+        infoText.setText("Time taken: " + totalTimeTaken + "ns");
 
     }
 
@@ -136,7 +135,10 @@ public class SortScreen implements Initializable {
                         sharedArray = synchroniseArrays(temporarySharedArray,true);
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.TO_BE_SORTED.toString())){
+                        long startTime = System.nanoTime();
                         primaryArray = new MergeSort().sortArray(primaryArray);
+                        long endTime = System.nanoTime();
+                        infoText.setText("Time taken: " + totalTimeTaken + "ns");
                         System.out.println("Sorted: " + Arrays.toString(primaryArray));
                         resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
                     }
