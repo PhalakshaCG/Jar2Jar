@@ -23,13 +23,13 @@ public class p2pNode {
 
     public boolean connectToPeer() {
         try {
-            client.sendToServer(sendMessage);
+            client.pingToServer();
             System.out.println("Client mode");
             mode = Mode.CLIENT;
             isConnected = true;
         } catch (IOException e1) {
             try {
-                server.sendToClient(sendMessage);
+                server.pingToClient();
                 System.out.println("Server mode");
                 mode = Mode.SERVER;
                 isConnected = true;
@@ -44,7 +44,7 @@ public class p2pNode {
     }
 
     public String fetchMessage(){
-        String message = null;
+        connectToPeer();
         switch (mode){
             case CLIENT -> {
                 try{
@@ -56,7 +56,8 @@ public class p2pNode {
                     fetchMessage = server.sendToClient(sendMessage);
                 } catch (IOException ignored){}
             }
-            case NULL -> message = "No message sent";
+            case NULL -> {
+            }
         }
         //System.out.println(fetchMessage);
         return fetchMessage;
@@ -64,6 +65,7 @@ public class p2pNode {
 
     public void sendMessage(String message){
         sendMessage = message;
+        connectToPeer();
         switch (mode){
             case CLIENT -> {
                 try{

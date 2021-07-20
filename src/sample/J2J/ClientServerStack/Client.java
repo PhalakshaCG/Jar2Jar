@@ -16,9 +16,13 @@ public class Client extends BaseNode {
         DataInputStream inputStream = new DataInputStream(socket.getInputStream());
         this.data = inputStream.readUTF();
         socket.close();
-        //System.out.println("Sent: " + data);
-        //System.out.println("Received: " + this.data);
         return this.data;
+    }
+    public void pingToServer() throws IOException {
+        int portNumber = getPortNumber();
+        String ipAddress = getIPAddress();
+        Socket socket = new Socket(ipAddress,portNumber);
+        socket.close();
     }
     public String receiveFromServer() throws IOException {
         return data;

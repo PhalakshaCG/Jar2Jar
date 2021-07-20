@@ -18,9 +18,13 @@ public class Server extends BaseNode {
         this.data = inputStream.readUTF();
         socket.close();
         serverSocket.close();
-        //System.out.println("Sent: " + data);
-        //System.out.println("Received: " + this.data);
         return this.data;
+    }
+    public void pingToClient() throws IOException {
+        ServerSocket serverSocket = new ServerSocket(getPortNumber());
+        Socket socket = serverSocket.accept();
+        socket.close();
+        serverSocket.close();
     }
     public String receiveFromClient() throws IOException {
         return data;
