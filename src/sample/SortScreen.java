@@ -11,6 +11,7 @@ import sample.SorterStack.MergeSort;
 import sample.SorterStack.PrefWriter;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -71,9 +72,12 @@ public class SortScreen implements Initializable {
     public void performSort(){
         if(enableSync.isSelected()){
             new Thread(()->{
+                long startTime = System.nanoTime();
                 System.out.println(Arrays.toString(primaryArray));
                 primaryArray = new MergeSort().sortArray(primaryArray);
                 resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
+                long endTime = System.nanoTime();
+                System.out.println(endTime - startTime);
             }).start();
 
             new Thread(()->{
@@ -82,9 +86,12 @@ public class SortScreen implements Initializable {
             }).start();
         }
         else{
+            long startTime = System.nanoTime();
             primaryArray = new MergeSort().sortArray(primaryArray);
             sharedArray = new MergeSort().sortArray(sharedArray);
             arrayText.setText(Arrays.toString(new MergeSort().merge(primaryArray,sharedArray)));
+            long endTime = System.nanoTime();
+            System.out.println(endTime - startTime);
         }
         infoText.setText("Sorted!");
     }
@@ -156,7 +163,9 @@ public class SortScreen implements Initializable {
     }
 
     public void closeWindow(){
-        syncThread.interrupt();
-        connectionThread.interrupt();
+        if(syncThread != null && syncThread.isAlive())
+            syncThread.interrupt();
+        if(connectionThread != null && connectionThread.isAlive())
+            connectionThread.interrupt();
     }
 }
