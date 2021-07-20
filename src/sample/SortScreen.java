@@ -11,7 +11,6 @@ import sample.SorterStack.MergeSort;
 import sample.SorterStack.PrefWriter;
 
 import java.net.URL;
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -59,7 +58,6 @@ public class SortScreen implements Initializable {
             syncThread.interrupt();
         }
         else{
-            resourceSharer = new p2pNode(6066,new BaseNode().getIPAddress());
             syncThread = new Thread(syncRunnable);
             syncThread.setDaemon(true);
             syncThread.start();
@@ -133,8 +131,10 @@ public class SortScreen implements Initializable {
                     int[] temporarySharedArray = convertToIntArray(sharedStrArray);
 
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
-                        resourceSharer = new p2pNode(temporarySharedArray[0],new BaseNode().getIPAddress());
                         arrayText.setText(Arrays.toString(temporarySharedArray));
+                        int[] portNum = {(int)Math.floor(Math.random()*10000 + 10)};
+                        resourceSharer.sendMessage(arrayToSend(portNum,SortStatus.PORT_UPDATE));
+                        resourceSharer = new p2pNode(portNum[0],new BaseNode().getIPAddress());
                         break;
                     }
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
@@ -156,9 +156,10 @@ public class SortScreen implements Initializable {
                         totalTimeTaken += mergeTime;
                         arrayText.setText(Arrays.toString(fullArray));
                         resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.FULLY_SORTED));
-                        resourceSharer = new p2pNode(fullArray[0],new BaseNode().getIPAddress());
 
                     }
+                    else if(getStatus(sharedStrArray).equals(SortStatus.PORT_UPDATE.toString()))
+                        resourceSharer = new p2pNode(temporarySharedArray[0],new BaseNode().getIPAddress());
                 }catch (NumberFormatException ignored){}
             }
         };
