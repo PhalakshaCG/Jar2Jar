@@ -71,6 +71,7 @@ public class SortScreen implements Initializable {
         if(isConnected){
             syncThread.interrupt();
             primaryArray = syncSort();
+            System.out.println(primaryArray.length);
             resourceSharer.sendMessage(Arrays.toString(primaryArray));
         }
         else{
@@ -97,7 +98,6 @@ public class SortScreen implements Initializable {
             while(sharedArray == null){
                 try{
                     String sharedStrArray = resourceSharer.fetchMessage();
-                    System.out.println(sharedStrArray);
                     sharedArray = convertToIntArray(sharedStrArray);
                 }catch (NumberFormatException ignored){}
             }
