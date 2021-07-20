@@ -22,6 +22,7 @@ public class SortScreen implements Initializable {
 
     p2pNode resourceSharer;
     boolean isConnected = false;
+    long totalTimeTaken;
 
     Thread connectionThread;
     Thread syncThread;
@@ -39,6 +40,7 @@ public class SortScreen implements Initializable {
 
     @FXML
     public void generateRandomNumbers(){
+        stopThreads();
         isConnected = false;
         int[] fullArray = new MergeSort().generateRandomArray(new PrefWriter().getLength(),new PrefWriter().getRange());
         primaryArray = synchroniseArrays(fullArray,true);
@@ -75,11 +77,11 @@ public class SortScreen implements Initializable {
         if(enableSync.isSelected()){
             localSort = new Thread(()->{
                 long startTime1 = System.nanoTime();
-                //System.out.println(Arrays.toString(primaryArray));
                 primaryArray = new MergeSort().sortArray(primaryArray);
+                System.out.println("Sorted: " + Arrays.toString(primaryArray));
                 long endTime1 = System.nanoTime();
                 resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
-                System.out.println(endTime1 - startTime1);
+                totalTimeTaken = (endTime1 - startTime1);
             });
             localSort.start();
 
@@ -100,17 +102,17 @@ public class SortScreen implements Initializable {
             long endTime = System.nanoTime();
             System.out.println(endTime - startTime);
         }
-        infoText.setText("Sorted!");
+        double timeToSort = (double) (totalTimeTaken/1000.0);
+        infoText.setText("Time taken: " + timeToSort + "ms");
+
     }
 
     private int[] convertToIntArray(String strArr) throws NumberFormatException{
-        System.out.println("String array: " + strArr);
         String[] arrOfStr = strArr.split(", ");
         int[] arr = new int[arrOfStr.length - 1];
         for(int i = 0; i < arr.length; i++){
             arr[i] = Integer.parseInt(arrOfStr[i]);
         }
-        System.out.println("Converted array: " + Arrays.toString(arr));
         return arr;
     }
 
@@ -135,14 +137,17 @@ public class SortScreen implements Initializable {
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.TO_BE_SORTED.toString())){
                         primaryArray = new MergeSort().sortArray(primaryArray);
+                        System.out.println("Sorted: " + Arrays.toString(primaryArray));
                         resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())){
                         sharedArray = temporarySharedArray;
+                        long startTime1 = System.nanoTime();
                         int[] fullArray = new MergeSort().merge(primaryArray,sharedArray);
-                        arrayText.setText(Arrays.toString(fullArray));
+                        long endTime1 = System.nanoTime();
+                        long mergeTime = endTime1 - startTime1;
+                        totalTimeTaken += mergeTime;
                         resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.UN_SORTED));
-
                     }
                 }catch (NumberFormatException ignored){}
             }
