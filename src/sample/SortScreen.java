@@ -59,7 +59,10 @@ public class SortScreen implements Initializable {
             syncThread.interrupt();
         }
         else{
-            resourceSharer = new p2pNode(Integer.parseInt(portSharing.fetchMessage()),new BaseNode().getIPAddress());
+            portSelector.interrupt();
+            int portNum = (int)Math.floor(Math.random()*10000 + 10);
+            resourceSharer = new p2pNode(portNum,new BaseNode().getIPAddress());
+            portSharing.sendMessage(Integer.toString(portNum));
             syncThread = new Thread(syncRunnable);
             syncThread.setDaemon(true);
             syncThread.start();
@@ -166,8 +169,9 @@ public class SortScreen implements Initializable {
         syncThread.start();
 
         portSelector = new Thread(() -> {
-            String portNum = Integer.toString((int)Math.floor(Math.random()*10000 + 10));
-            portSharing.sendMessage(portNum);
+            //String portNum = Integer.toString((int)Math.floor(Math.random()*10000 + 10));
+            int portNum = Integer.parseInt(portSharing.fetchMessage());
+            resourceSharer = new p2pNode(portNum,new BaseNode().getIPAddress());
         });
         portSelector.setDaemon(true);
         portSelector.start();
