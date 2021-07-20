@@ -74,7 +74,6 @@ public class SortScreen implements Initializable {
                 primaryArray = new MergeSort().sortArray(primaryArray);
                 System.out.println("Sorted locally: " + Arrays.toString(primaryArray));
                 long endTime1 = System.nanoTime();
-                totalTimeTaken += (endTime1 - startTime1);
 
                 resourceSharer.sendMessage(arrayToSend(sharedArray, SortStatus.TO_BE_SORTED));
                 System.out.println("Sorted externally: " + Arrays.toString(sharedArray));
@@ -83,6 +82,7 @@ public class SortScreen implements Initializable {
                 int[] sortedArray = new MergeSort().merge(primaryArray, sharedArray);
                 long endTime2 = System.nanoTime();
                 totalTimeTaken += endTime2 - startTime2;
+                totalTimeTaken += (endTime1 - startTime1);
 
                 resourceSharer.sendMessage(arrayToSend(primaryArray, SortStatus.IS_SORTED));
                 arrayText.setText(Arrays.toString(sortedArray));
@@ -135,6 +135,7 @@ public class SortScreen implements Initializable {
                         int[] portNum = {(int)Math.floor(Math.random()*10000 + 10)};
                         resourceSharer.sendMessage(arrayToSend(portNum,SortStatus.PORT_UPDATE));
                         resourceSharer = new p2pNode(portNum[0],new BaseNode().getIPAddress());
+                        System.out.println("New port: " + portNum[0]);
                         break;
                     }
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
@@ -158,9 +159,11 @@ public class SortScreen implements Initializable {
                         resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.FULLY_SORTED));
 
                     }
-                    else if(getStatus(sharedStrArray).equals(SortStatus.PORT_UPDATE.toString()))
-                        resourceSharer = new p2pNode(temporarySharedArray[0],new BaseNode().getIPAddress());
-                }catch (NumberFormatException ignored){}
+                    else if(getStatus(sharedStrArray).equals(SortStatus.PORT_UPDATE.toString())) {
+                        resourceSharer = new p2pNode(temporarySharedArray[0], new BaseNode().getIPAddress());
+                        System.out.println("New port: " + temporarySharedArray[0]);
+                    }
+                    }catch (NumberFormatException ignored){}
             }
         };
         syncThread = new Thread(syncRunnable);
