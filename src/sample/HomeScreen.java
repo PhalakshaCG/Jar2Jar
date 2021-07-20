@@ -8,13 +8,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
-import sample.SorterStack.MergeSort;
-import sample.SorterStack.Sorter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.Random;
 
 public class HomeScreen {
     @FXML
@@ -56,7 +52,7 @@ public class HomeScreen {
         stage.show();
         stage.setOnCloseRequest(windowEvent -> {
             SortScreen sortScreen = loader.getController();
-            sortScreen.closeWindow();
+            sortScreen.stopThreads();
         });
     }
 }
