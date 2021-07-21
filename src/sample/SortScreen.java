@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.text.Text;
-import sample.J2J.ClientServerStack.BaseNode;
 import sample.J2J.p2pNode;
 import sample.SorterStack.MergeSort;
 import sample.SorterStack.PrefWriter;
