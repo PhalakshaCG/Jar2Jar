@@ -32,8 +32,12 @@
         <items>
           <Button mnemonicParsing="false" onAction="#generateRandomNumbers" text="Generate" />
             <Button mnemonicParsing="false" onAction="#performSort" text="Sort" />
-            <Text fx:id="infoText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="202.2060546875" />
-            <ToggleButton fx:id="enableSync" mnemonicParsing="false" onAction="#establishConnection" text="Synchronise" />
+            <Text fx:id="infoText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="210.2060546875">
+               <font>
+                  <Font size="12.0" />
+               </font></Text>
+            <ToggleButton fx:id="enableSync" mnemonicParsing="false" onAction="#establishConnection" prefHeight="25.0" prefWidth="57.0" text="Sync" />
+            <Button mnemonicParsing="false" onAction="#reset" text="↩️" />
         </items>
       </ToolBar>
       <Text layoutX="160.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Network computation" />
