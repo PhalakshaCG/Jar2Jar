@@ -18,6 +18,7 @@ public class SortScreen implements Initializable {
 
     int[] primaryArray = null;
     int[] sharedArray = null;
+    int[] portSwap;
 
     p2pNode resourceSharer;
     p2pNode portSharing;
@@ -57,12 +58,14 @@ public class SortScreen implements Initializable {
     public void establishConnection(){
         if(!enableSync.isSelected()){
             syncThread.interrupt();
+
         }
         else{
             /*portSelector.interrupt();
             int portNum = (int)Math.floor(Math.random()*10000 + 10);
             resourceSharer = new p2pNode(portNum,new BaseNode().getIPAddress());
             portSharing.sendMessage(Integer.toString(portNum));*/
+            resourceSharer = new p2pNode(portSwap[0],new BaseNode().getIPAddress());
             syncThread = new Thread(syncRunnable);
             syncThread.setDaemon(true);
             syncThread.start();
@@ -138,12 +141,10 @@ public class SortScreen implements Initializable {
                     System.out.println(getStatus(sharedStrArray));
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
                         arrayText.setText(Arrays.toString(temporarySharedArray));
-                        int[] portSwap = {temporarySharedArray[0]};
+                        portSwap = new int[]{temporarySharedArray[0]};
                         resourceSharer.sendMessage(arrayToSend(portSwap, SortStatus.PORT_UPDATE));
-                        try{
-                            Thread.sleep(2000);
-                        }catch (InterruptedException ignored){}
-                        resourceSharer = new p2pNode(portSwap[0],new BaseNode().getIPAddress());
+                        enableSync.setSelected(false);
+                        //resourceSharer = new p2pNode(portSwap[0],new BaseNode().getIPAddress());
                         break;
                     }
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
@@ -167,7 +168,8 @@ public class SortScreen implements Initializable {
                         resourceSharer.sendMessage(arrayToSend(fullArray, SortStatus.FULLY_SORTED));
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.PORT_UPDATE.toString())){
-                        resourceSharer = new p2pNode(temporarySharedArray[0],new BaseNode().getIPAddress());
+                        portSwap[0] = temporarySharedArray[0];
+                        resourceSharer = new p2pNode(portSwap[0], new BaseNode().getIPAddress());
                     }
                     }catch (NumberFormatException ignored){}
             }
