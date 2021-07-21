@@ -95,15 +95,17 @@ public class p2pNode {
     }
     public void disconnect(){
         System.out.println("in \'disconnect\'");
-        try {
-            client.closeSocket();
-            System.out.println("Client closed");
-            server.closeSocket();
-            System.out.println("Server closed");
-            serverInitThread.interrupt();
-            clientInitThread.interrupt();
-        }catch (Exception e){
-            System.out.println("Server close exception");
-        }
+        new Thread(() -> {
+            try {
+                client.closeSocket();
+                System.out.println("Client closed");
+                server.closeSocket();
+                System.out.println("Server closed");
+                serverInitThread.interrupt();
+                clientInitThread.interrupt();
+            }catch (Exception e){
+                System.out.println("Server close exception");
+            }
+        }).start();
     }
 }
