@@ -144,7 +144,6 @@ public class SortScreen implements Initializable {
                         arrayText.setText(Arrays.toString(temporarySharedArray));
                         portSwap = new int[]{temporarySharedArray[0]};
                         resourceSharer.sendMessage(arrayToSend(portSwap, SortStatus.PORT_UPDATE));
-                        enableSync.setSelected(false);
                         //resourceSharer = new p2pNode(portSwap[0],new BaseNode().getIPAddress());
                         break;
                     }
