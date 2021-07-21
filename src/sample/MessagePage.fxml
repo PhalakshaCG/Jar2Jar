@@ -32,7 +32,7 @@
             <Font size="24.0" />
          </font>
       </Text>
-      <Text fx:id="messageStatus" layoutX="317.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="    " textAlignment="RIGHT" wrappingWidth="111.67578125" />
+      <Text fx:id="messageStatus" layoutX="314.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" text="    " textAlignment="RIGHT" wrappingWidth="111.67578125" />
       <Text layoutX="145.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Messenger">
          <font>
             <Font name="System Bold" size="33.0" />
