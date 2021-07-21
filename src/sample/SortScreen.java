@@ -52,6 +52,15 @@ public class SortScreen implements Initializable {
 
     @FXML
     public void establishConnection(){
+        if(!enableSync.isSelected())
+            syncThread.interrupt();
+        else{
+
+            syncThread = new Thread(syncRunnable);
+            syncThread.setDaemon(true);
+            syncThread.start();
+
+        }
     }
 
     @FXML
@@ -141,9 +150,6 @@ public class SortScreen implements Initializable {
                     }catch (NumberFormatException ignored){}
             }
         };
-        syncThread = new Thread(syncRunnable);
-        syncThread.setDaemon(true);
-        syncThread.start();
     }
 
     private int[] synchroniseArrays(int[] primaryArray, boolean sortStarter){
