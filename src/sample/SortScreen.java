@@ -37,7 +37,6 @@ public class SortScreen implements Initializable {
 
     @FXML
     public void generateRandomNumbers(){
-        stopThreads();
         int[] fullArray = new MergeSort().generateRandomArray(new PrefWriter().getLength(),new PrefWriter().getRange());
         primaryArray = synchroniseArrays(fullArray,true);
         System.out.println(Arrays.toString(primaryArray));
