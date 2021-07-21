@@ -133,7 +133,7 @@ public class SortScreen implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         portSwap[0] = 6066;
-        resourceSharer = new p2pNode(portSwap[0], new BaseNode().getIPAddress());
+        resourceSharer = new p2pNode(6066, new BaseNode().getIPAddress());
         syncRunnable = ()->{
             while(enableSync.isSelected()){
                 try{
@@ -143,9 +143,7 @@ public class SortScreen implements Initializable {
                     System.out.println(getStatus(sharedStrArray));
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
                         arrayText.setText(Arrays.toString(temporarySharedArray));
-                        portSwap[0] = temporarySharedArray[0];
-                        System.out.println("New port num: " + portSwap[0]);
-                        resourceSharer.sendMessage(arrayToSend(portSwap, SortStatus.PORT_UPDATE));
+                        resourceSharer.sendMessage("ping");
                         //resourceSharer = new p2pNode(portSwap[0],new BaseNode().getIPAddress());
                     }
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
@@ -168,7 +166,7 @@ public class SortScreen implements Initializable {
                         arrayText.setText(Arrays.toString(fullArray));
                         resourceSharer.sendMessage(arrayToSend(fullArray, SortStatus.FULLY_SORTED));
                     }
-                    else if(getStatus(sharedStrArray).equals(SortStatus.PORT_UPDATE.toString())){
+                    if(getStatus(sharedStrArray).equals(SortStatus.PORT_UPDATE.toString())){
                         portSwap[0] = temporarySharedArray[0];
                         //resourceSharer = new p2pNode(portSwap[0], new BaseNode().getIPAddress());
                     }
