@@ -12,7 +12,7 @@ public class Server extends BaseNode {
     private BufferedReader inputReader;
 
     public String receiveFromClient() throws IOException {
-        System.out.println("\nReceiving from client...");
+        //System.out.println("\nReceiving from client...");
         this.data = inputReader.readLine();
         System.out.println(data);
         outputWriter.println("Received");
@@ -20,7 +20,7 @@ public class Server extends BaseNode {
     }
 
     public void start() throws IOException {
-        System.out.println("\nIn server start...");
+        //System.out.println("\nIn server start...");
         myServerSocket = new ServerSocket(getPortNumber());
         myClientSocket = myServerSocket.accept();
         outputWriter = new PrintWriter(myClientSocket.getOutputStream(), true);
@@ -32,19 +32,19 @@ public class Server extends BaseNode {
 
     public Server(int portNumber, String ipAddress) throws IOException{
         super(portNumber,ipAddress);
-        System.out.println("\nIn server constructor");
+        //System.out.println("\nIn server constructor");
     }
     public void closeSocket() throws IOException {
 
         inputReader.close();
         outputWriter.close();
 
-        System.out.println("In server close socket");
+        //System.out.println("In server close socket");
         myClientSocket.close();
-        System.out.println("Server socket closed");
+        //System.out.println("Server socket closed");
 
         myServerSocket.close();
-        System.out.println("MyServerSocket closed");
+        //System.out.println("MyServerSocket closed");
 
     }
 }

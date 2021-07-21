@@ -10,7 +10,7 @@ public class Client extends BaseNode {
     BufferedReader inputReader;
 
     public String sendToServer(String message) throws IOException {
-        System.out.println("\nIn client...");
+        //System.out.println("\nIn client...");
         outputWriter.println(message);
         this.data = inputReader.readLine();
         System.out.println(this.data);
@@ -28,7 +28,7 @@ public class Client extends BaseNode {
     }
     public Client(int portNumber, String ipAddress) throws IOException {
         super(portNumber,ipAddress);
-        System.out.println("Client created");
+        //System.out.println("Client created");
     }
     public void closeSocket() throws IOException {
         inputReader.close();

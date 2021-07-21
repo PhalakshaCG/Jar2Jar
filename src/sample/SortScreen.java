@@ -73,20 +73,14 @@ public class SortScreen implements Initializable {
             Thread peerSort = new Thread(() -> {
                 long startTime1 = System.nanoTime();
                 primaryArray = new MergeSort().sortArray(primaryArray);
-                System.out.println("Sorted locally: " + Arrays.toString(primaryArray));
                 long endTime1 = System.nanoTime();
-
-                resourceSharer.sendMessage(arrayToSend(sharedArray, SortStatus.TO_BE_SORTED));
-                System.out.println("Sorted externally: " + Arrays.toString(sharedArray));
-
-                long startTime2 = System.nanoTime();
-                int[] sortedArray = new MergeSort().merge(primaryArray, sharedArray);
-                long endTime2 = System.nanoTime();
-                totalTimeTaken += endTime2 - startTime2;
                 totalTimeTaken += (endTime1 - startTime1);
 
+                System.out.println("Sorted locally: " + Arrays.toString(primaryArray));
+
+                System.out.println("Sorted externally: " + Arrays.toString(sharedArray));
+
                 resourceSharer.sendMessage(arrayToSend(primaryArray, SortStatus.IS_SORTED));
-                arrayText.setText(Arrays.toString(sortedArray));
 
                 double timeToSort = (totalTimeTaken/1000.0);
                 infoText.setText("Time taken: " + timeToSort + "µs");
@@ -124,7 +118,8 @@ public class SortScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        resourceSharer = new p2pNode(6066, new BaseNode().getIPAddress());
+        resourceSharer = new p2pNode();
+        resourceSharer.connectToPeer();
         syncRunnable = ()->{
             while(enableSync.isSelected()){
                 try{
@@ -132,6 +127,7 @@ public class SortScreen implements Initializable {
                     //System.out.println(sharedStrArray);
                     int[] temporarySharedArray = convertToIntArray(sharedStrArray);
                     System.out.println(getStatus(sharedStrArray));
+
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
                         arrayText.setText(Arrays.toString(temporarySharedArray));
                         resourceSharer.sendMessage("ping");
@@ -141,17 +137,15 @@ public class SortScreen implements Initializable {
                         primaryArray = synchroniseArrays(temporarySharedArray,false);
                         sharedArray = synchroniseArrays(temporarySharedArray,true);
                     }
-                    else if(getStatus(sharedStrArray).equals(SortStatus.TO_BE_SORTED.toString())){
-                        primaryArray = new MergeSort().sortArray(temporarySharedArray);
-                        System.out.println("Sorted: " + Arrays.toString(primaryArray));
-                    }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())) {
                         sharedArray = temporarySharedArray;
                         long startTime1 = System.nanoTime();
+                        primaryArray = new MergeSort().sortArray(primaryArray);
                         int[] fullArray = new MergeSort().merge(primaryArray, sharedArray);
                         long endTime1 = System.nanoTime();
-                        long mergeTime = endTime1 - startTime1;
-                        totalTimeTaken += mergeTime;
+                        totalTimeTaken = endTime1 - startTime1;
+                        double timeToSort = (totalTimeTaken/1000.0);
+                        infoText.setText("Time taken: " + timeToSort + "µs");
                         arrayText.setText(Arrays.toString(fullArray));
                         resourceSharer.sendMessage(arrayToSend(fullArray, SortStatus.FULLY_SORTED));
                     }
@@ -187,7 +181,6 @@ public class SortScreen implements Initializable {
     @FXML
     public void reset(){
         resourceSharer = new p2pNode(new BaseNode().getPortNumber() + 1,new BaseNode().getIPAddress());
-
     }
 
     public void stopThreads(){
