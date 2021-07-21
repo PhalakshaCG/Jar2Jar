@@ -39,9 +39,9 @@ public class SortScreen implements Initializable {
     public void generateRandomNumbers(){
         int[] fullArray = new MergeSort().generateRandomArray(new PrefWriter().getLength(),new PrefWriter().getRange());
         primaryArray = synchroniseArrays(fullArray,true);
-        System.out.println(Arrays.toString(primaryArray));
+        //System.out.println(Arrays.toString(primaryArray));
         sharedArray = synchroniseArrays(fullArray, false);
-        System.out.println(Arrays.toString(sharedArray));
+        //System.out.println(Arrays.toString(sharedArray));
         arrayText.setText(Arrays.toString(fullArray));
         infoText.setText("Random numbers generated!");
         if(enableSync.isSelected()){
