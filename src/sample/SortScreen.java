@@ -57,7 +57,7 @@ public class SortScreen implements Initializable {
     @FXML
     public void establishConnection(){
         if(!enableSync.isSelected()){
-            resourceSharer = new p2pNode(6066, new BaseNode().getIPAddress());
+            resourceSharer = new p2pNode(portSwap[0], new BaseNode().getIPAddress());
             syncThread.interrupt();
 
         }
