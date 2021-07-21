@@ -187,7 +187,7 @@ public class SortScreen implements Initializable {
     @FXML
     public void reset(){
         resourceSharer = new p2pNode(new BaseNode().getPortNumber() + 1,new BaseNode().getIPAddress());
-        arrayText.setText(" ");
+
     }
 
     public void stopThreads(){
