@@ -69,19 +69,12 @@ public class SortScreen implements Initializable {
         if(enableSync.isSelected()){
             syncThread.interrupt();
             Thread peerSort = new Thread(() -> {
-                long startTime1 = System.nanoTime();
-                primaryArray = new MergeSort().sortArray(primaryArray);
-                long endTime1 = System.nanoTime();
-                totalTimeTaken += (endTime1 - startTime1);
 
                 System.out.println("Sorted locally: " + Arrays.toString(primaryArray));
 
                 System.out.println("Sorted externally: " + Arrays.toString(sharedArray));
 
-                resourceSharer.sendMessage(arrayToSend(primaryArray, SortStatus.IS_SORTED));
-
-                double timeToSort = (totalTimeTaken/1000.0);
-                infoText.setText("Time taken: " + timeToSort + "µs");
+                resourceSharer.sendMessage(arrayToSend(sharedArray, SortStatus.TO_BE_SORTED));
 
             });
             peerSort.start();
@@ -90,8 +83,9 @@ public class SortScreen implements Initializable {
             long startTime = System.nanoTime();
             primaryArray = new MergeSort().sortArray(primaryArray);
             sharedArray = new MergeSort().sortArray(sharedArray);
-            arrayText.setText(Arrays.toString(new MergeSort().merge(primaryArray,sharedArray)));
             long endTime = System.nanoTime();
+
+            arrayText.setText(Arrays.toString(new MergeSort().merge(primaryArray,sharedArray)));
             totalTimeTaken = endTime - startTime;
 
             double timeToSort = (totalTimeTaken/1000.0);
@@ -134,6 +128,16 @@ public class SortScreen implements Initializable {
                         arrayText.setText(Arrays.toString(temporarySharedArray));
                         primaryArray = synchroniseArrays(temporarySharedArray,false);
                         sharedArray = synchroniseArrays(temporarySharedArray,true);
+                    }
+                    else if(getStatus(sharedStrArray).equals(SortStatus.TO_BE_SORTED.toString())){
+                        long startTime1 = System.nanoTime();
+                        primaryArray = new MergeSort().sortArray(primaryArray);
+                        long endTime1 = System.nanoTime();
+                        totalTimeTaken = endTime1 - startTime1;
+                        double timeToSort = (totalTimeTaken/1000.0);
+                        infoText.setText("Time taken: " + timeToSort + "µs");
+                        resourceSharer.sendMessage(arrayToSend(primaryArray,SortStatus.IS_SORTED));
+
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())) {
                         sharedArray = temporarySharedArray;
