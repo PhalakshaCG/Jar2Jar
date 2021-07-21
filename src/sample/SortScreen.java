@@ -57,7 +57,7 @@ public class SortScreen implements Initializable {
     @FXML
     public void establishConnection(){
         if(!enableSync.isSelected()){
-            resourceSharer = new p2pNode(portSwap[0], new BaseNode().getIPAddress());
+            //resourceSharer = new p2pNode(portSwap[0], new BaseNode().getIPAddress());
             syncThread.interrupt();
 
         }
@@ -133,7 +133,7 @@ public class SortScreen implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         portSwap[0] = 6066;
-        resourceSharer = new p2pNode(6066, new BaseNode().getIPAddress());
+        resourceSharer = new p2pNode(portSwap[0], new BaseNode().getIPAddress());
         syncRunnable = ()->{
             while(enableSync.isSelected()){
                 try{
@@ -144,6 +144,7 @@ public class SortScreen implements Initializable {
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
                         arrayText.setText(Arrays.toString(temporarySharedArray));
                         portSwap[0] = temporarySharedArray[0];
+                        System.out.println("New port num: " + portSwap[0]);
                         resourceSharer.sendMessage(arrayToSend(portSwap, SortStatus.PORT_UPDATE));
                         //resourceSharer = new p2pNode(portSwap[0],new BaseNode().getIPAddress());
                     }
