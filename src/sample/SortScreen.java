@@ -138,6 +138,9 @@ public class SortScreen implements Initializable {
                     System.out.println(getStatus(sharedStrArray));
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
                         arrayText.setText(Arrays.toString(temporarySharedArray));
+                        int[] portSwap = {temporarySharedArray[0]};
+                        resourceSharer.sendMessage(arrayToSend(portSwap, SortStatus.PORT_UPDATE));
+                        resourceSharer = new p2pNode(portSwap[0],new BaseNode().getIPAddress());
                         break;
                     }
                     if(getStatus(sharedStrArray).equals(SortStatus.UN_SORTED.toString())){
@@ -159,9 +162,6 @@ public class SortScreen implements Initializable {
                         totalTimeTaken += mergeTime;
                         arrayText.setText(Arrays.toString(fullArray));
                         resourceSharer.sendMessage(arrayToSend(fullArray, SortStatus.FULLY_SORTED));
-                        int[] portSwap = {fullArray[0]};
-                        resourceSharer.sendMessage(arrayToSend(portSwap, SortStatus.PORT_UPDATE));
-                        resourceSharer = new p2pNode(portSwap[0],new BaseNode().getIPAddress());
                     }
                     else if(getStatus(sharedStrArray).equals(SortStatus.PORT_UPDATE.toString())){
                         resourceSharer = new p2pNode(temporarySharedArray[0],new BaseNode().getIPAddress());
