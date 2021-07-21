@@ -34,8 +34,7 @@ public class Controller implements Initializable, EventListener {
     @FXML
     public void sendMessage(ActionEvent e) {
         messengerThread = new Thread(() -> {
-            p2pInstance.sendMessage(messageToSend.getCharacters().toString());
-            messageStatus.setText("Message sent!");
+            messageStatus.setText(p2pInstance.sendMessage(messageToSend.getCharacters().toString()));
         });
         messengerThread.start();
 
@@ -45,23 +44,27 @@ public class Controller implements Initializable, EventListener {
     public void fetchMessage(ActionEvent e) {
         messageFetched.setText(p2pInstance.fetchMessage());
         messageStatus.setText("Message received!");
-        new Thread(() -> {
+        if(fetcherThread != null)
+            fetcherThread.interrupt();
+        fetcherThread = new Thread(() -> {
             messageFetched.setText(p2pInstance.fetchMessage());
-            messageStatus.setText("Message received!");
-        }).start();
+        });
+        fetcherThread.start();
     }
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) throws NullPointerException{
-        p2pInstance = new p2pNode(80,new BaseNode().getIPAddress());
+        p2pInstance = new p2pNode();
+        p2pInstance.connectToPeer();
         autoFetch.setSelected(true);
         fetchFunction = () -> {
             while (autoFetch.isSelected()) {
                 try {
                     messageFetched.setText(p2pInstance.fetchMessage());
-                    messageStatus.setText("Connected");
-                }catch (NullPointerException ignored){}
+                }catch (NullPointerException e){
+                    //System.out.println("Received null");
+                }
             }
         };
         fetcherThread = new Thread(fetchFunction);
@@ -70,8 +73,10 @@ public class Controller implements Initializable, EventListener {
     }
 
     public void closeWindow(){
+        autoFetch.setSelected(false);
         fetcherThread.interrupt();
-        p2pInstance = null;
+        System.out.println("Fetcher interrupted");
+        p2pInstance.disconnect();
         messageStatus.setText(" ");
     }
 

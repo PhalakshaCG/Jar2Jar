@@ -11,76 +11,99 @@ public class p2pNode {
     Mode mode;
     String sendMessage = "...";
     String fetchMessage = "...";
+    Thread serverInitThread;
+    Thread clientInitThread;
 
     public p2pNode(int portNumber, String ipAddress){
         assert false;
         instance.setIPAddress(ipAddress);
         instance.setPortNumber(portNumber);
-        client = new Client(instance.getPortNumber(), instance.getIPAddress());
-        server = new Server(instance.getPortNumber(), instance.getIPAddress());
+        try {
+            client = new Client(instance.getPortNumber(), instance.getIPAddress());
+            server = new Server(instance.getPortNumber(), instance.getIPAddress());
+        } catch (IOException e){
+            System.out.println("Instantiation problem ");
+        }
 
+    }
+    public p2pNode(){
+        new Thread(() -> {
+        try {
+            server = new Server(instance.getPortNumber(), instance.getIPAddress());
+        } catch (IOException e){
+            System.out.println("Instantiation problem");
+        }}).start();
+        try {
+            client = new Client(instance.getPortNumber(), instance.getIPAddress());
+        } catch (IOException e){
+            System.out.println("Instantiation problem");
+        }
     }
 
     public boolean connectToPeer() {
-        try {
-            client.sendToServer(sendMessage);
-            System.out.println("Client mode");
-            mode = Mode.CLIENT;
-            isConnected = true;
-        } catch (IOException e1) {
+        isConnected = true;
+        serverInitThread = new Thread(() -> {
             try {
-                server.sendToClient(sendMessage);
-                System.out.println("Server mode");
-                mode = Mode.SERVER;
-                isConnected = true;
-            } catch (IOException e2) {
-                //System.out.println("Node not found");
+                server.start();
+            } catch (IOException e) {
+                System.out.println("Could not start server");
                 isConnected = false;
-                mode = Mode.NULL;
             }
-            //System.out.println("Connected");
-        }
+        });
+        clientInitThread = new Thread(() -> {
+            boolean isConnected = false;
+            while(!isConnected){
+                try{
+                    client.startConnection();
+                    isConnected = true;
+                } catch (IOException ignored) {}
+            }
+            System.out.println("Connection established");
+        });
+        serverInitThread.setDaemon(true);
+        clientInitThread.setDaemon(true);
+        serverInitThread.start();
+        clientInitThread.start();
+
         return isConnected;
     }
 
-    public String fetchMessage(){
-        String message = null;
-        connectToPeer();
-        switch (mode){
-            case CLIENT -> {
-                try{
-                    fetchMessage = client.sendToServer(sendMessage);
-                } catch (IOException ignored) {}
-            }
-            case SERVER -> {
-                try {
-                    fetchMessage = server.sendToClient(sendMessage);
-                } catch (IOException ignored){}
-            }
-            case NULL -> message = "No message sent";
+    public String fetchMessage() {
+        try {
+            fetchMessage = server.receiveFromClient();
+            System.out.println("Message fetched");
+        }catch (IOException e){
+            System.out.println("Fetch message exception");
+            e.printStackTrace();
         }
         //System.out.println(fetchMessage);
         return fetchMessage;
     }
 
-    public void sendMessage(String message){
+    public String sendMessage(String message){
         sendMessage = message;
-        connectToPeer();
-        switch (mode){
-            case CLIENT -> {
-                try{
-                    fetchMessage = client.sendToServer(sendMessage);
-                } catch (IOException ignored) {}
-            }
-            case SERVER -> {
-                try {
-                    fetchMessage = server.sendToClient(sendMessage);
-                } catch (IOException ignored){}
-            }
-            case NULL -> System.out.println("Nobody to broadcast");
+        String ack = "";
+        try {
+            ack = client.sendToServer(sendMessage);
+        }catch (IOException e){
+            System.out.println("Send to server exception");
         }
+        return ack;
     }
     public Mode getMode(){
         return mode;
+    }
+    public void disconnect(){
+        System.out.println("in \'disconnect\'");
+        try {
+            client.closeSocket();
+            System.out.println("Client closed");
+            server.closeSocket();
+            System.out.println("Server closed");
+            serverInitThread.interrupt();
+            clientInitThread.interrupt();
+        }catch (Exception e){
+            System.out.println("Server close exception");
+        }
     }
 }

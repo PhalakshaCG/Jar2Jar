@@ -7,20 +7,20 @@ public class BaseNode {
     String data = "Ping";
 
     public void setPortNumber(int portNumber){
-        Preferences preferences = Preferences.userNodeForPackage(BaseNode.class);
+        Preferences preferences = Preferences.userNodeForPackage(this.getClass());
         preferences.putInt(PortNumber,portNumber);
 
     }
     public int getPortNumber(){
-        Preferences preferences = Preferences.userNodeForPackage(BaseNode.class);
-        return preferences.getInt(PortNumber,80);
+        Preferences preferences = Preferences.userNodeForPackage(this.getClass());
+        return preferences.getInt(PortNumber,6066);
     }
     public void setIPAddress(String ipAddress){
-        Preferences preferences = Preferences.userNodeForPackage(BaseNode.class);
+        Preferences preferences = Preferences.userNodeForPackage(this.getClass());
         preferences.put(IPAddress,ipAddress);
     }
     public String getIPAddress(){
-        Preferences preferences = Preferences.userNodeForPackage(BaseNode.class);
+        Preferences preferences = Preferences.userNodeForPackage(this.getClass());
         return preferences.get(IPAddress,"192.168.0.1");
     }
     public String getData(){
