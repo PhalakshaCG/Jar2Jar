@@ -133,9 +133,9 @@ public class SortScreen implements Initializable {
             while(enableSync.isSelected()){
                 try{
                     String sharedStrArray = resourceSharer.fetchMessage();
-                    System.out.println(sharedStrArray);
+                    //System.out.println(sharedStrArray);
                     int[] temporarySharedArray = convertToIntArray(sharedStrArray);
-
+                    System.out.println(getStatus(sharedStrArray));
                     if(getStatus(sharedStrArray).equals(SortStatus.FULLY_SORTED.toString())){
                         arrayText.setText(Arrays.toString(temporarySharedArray));
                         break;
