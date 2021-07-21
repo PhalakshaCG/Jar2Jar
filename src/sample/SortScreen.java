@@ -150,16 +150,21 @@ public class SortScreen implements Initializable {
                         System.out.println("Sorted: " + Arrays.toString(primaryArray));
                         //resourceSharer.sendMessage(arrayToSend(temporarySharedArray,SortStatus.IS_SORTED));
                     }
-                    else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())){
+                    else if(getStatus(sharedStrArray).equals(SortStatus.IS_SORTED.toString())) {
                         sharedArray = temporarySharedArray;
                         long startTime1 = System.nanoTime();
-                        int[] fullArray = new MergeSort().merge(primaryArray,sharedArray);
+                        int[] fullArray = new MergeSort().merge(primaryArray, sharedArray);
                         long endTime1 = System.nanoTime();
                         long mergeTime = endTime1 - startTime1;
                         totalTimeTaken += mergeTime;
                         arrayText.setText(Arrays.toString(fullArray));
-                        resourceSharer.sendMessage(arrayToSend(fullArray,SortStatus.FULLY_SORTED));
-
+                        resourceSharer.sendMessage(arrayToSend(fullArray, SortStatus.FULLY_SORTED));
+                        int[] portSwap = {fullArray[0]};
+                        resourceSharer.sendMessage(arrayToSend(portSwap, SortStatus.PORT_UPDATE));
+                        resourceSharer = new p2pNode(portSwap[0],new BaseNode().getIPAddress());
+                    }
+                    else if(getStatus(sharedStrArray).equals(SortStatus.PORT_UPDATE.toString())){
+                        resourceSharer = new p2pNode(temporarySharedArray[0],new BaseNode().getIPAddress());
                     }
                     }catch (NumberFormatException ignored){}
             }
