@@ -183,5 +183,6 @@ public class SortScreen implements Initializable {
             peerSort.interrupt();
             portSelector.interrupt();
         }
+        resourceSharer.disconnect();
     }
 }
