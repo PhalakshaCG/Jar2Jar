@@ -18,7 +18,7 @@ public class SortScreen implements Initializable {
 
     int[] primaryArray = null;
     int[] sharedArray = null;
-    int[] portSwap;
+    int[] portSwap = new int[1];
 
     p2pNode resourceSharer;
     p2pNode portSharing;
@@ -131,7 +131,8 @@ public class SortScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        resourceSharer = new p2pNode(6066, new BaseNode().getIPAddress());
+        portSwap[0] = 6066;
+        //resourceSharer = new p2pNode(6066, new BaseNode().getIPAddress());
         syncRunnable = ()->{
             while(enableSync.isSelected()){
                 try{
