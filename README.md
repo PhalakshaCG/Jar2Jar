@@ -32,5 +32,8 @@ To send a message to the other computer, use sendMessage(String). To receive a m
 
 ```message = instance.fetchMessage();```
 
+#### Step 6
+Call ```instance.disconnet()``` on both computers to drop off the connection
+
 
 
