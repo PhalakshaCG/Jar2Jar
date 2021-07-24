@@ -26,7 +26,11 @@ Call the connect() member function on both computers to connect
 ```instance.connect()```
 
 #### Step 5
-To send a message, use sendMessage(String). To receive a message, call fetchMessage()
-```instance.connext()```
+To send a message to the other computer, use sendMessage(String). To receive a message, call fetchMessage()
+
+```instance.sendMessage("Hello there");```
+
+```message = instance.fetchMessage();```
+
 
 
