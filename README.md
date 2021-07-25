@@ -35,7 +35,7 @@ To send a message to the other computer, use sendMessage(String). To receive a m
 #### Step 6
 Call ```instance.disconnet()``` on both computers to drop off the connection
 
-#### If developing an app, use all these functions in threads to allow for concurrency
+#### If developing an app, place all these functions inside threads to retain GUI functionality
 
 
 
