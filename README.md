@@ -1,7 +1,7 @@
 # Jar2Jar
 *A peer to peer network emulator*
 
-## How to use the the API in your own project
+## How to use the API in your own project
 
 #### Step 1
 Copy the J2J package from src/sample to your project.
