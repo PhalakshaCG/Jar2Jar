@@ -4,7 +4,7 @@
 ## How to use the the API in your own project
 
 #### Step 1
-Copy the J2J package into your project.
+Copy the J2J package from src/sample to your project.
 Import the package into the appropiate files
 
 ```import J2J```
