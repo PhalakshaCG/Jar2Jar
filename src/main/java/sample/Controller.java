@@ -6,8 +6,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.text.Text;
-import sample.J2J.*;
-import sample.J2J.ClientServerStack.BaseNode;
 
 import java.net.URL;
 import java.util.EventListener;
@@ -28,7 +26,7 @@ public class Controller implements Initializable, EventListener {
 
     Thread messengerThread;
     Thread fetcherThread;
-    p2pNode p2pInstance;
+    sample.J2J.p2pNode p2pInstance;
     Runnable fetchFunction;
 
     @FXML
@@ -55,7 +53,7 @@ public class Controller implements Initializable, EventListener {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) throws NullPointerException{
-        p2pInstance = new p2pNode();
+        p2pInstance = new sample.J2J.p2pNode();
         p2pInstance.connectToPeer();
         autoFetch.setSelected(true);
         fetchFunction = () -> {
