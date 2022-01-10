@@ -55,7 +55,7 @@ public class SshScreen implements Initializable {
                         terminal.appendText(whoami);
                     }
                     else{
-                        terminal.appendText(message);
+                        addTerminalText(message);
                     }
                 }catch (NullPointerException e){
                     //System.out.println("Received null");
@@ -75,12 +75,13 @@ public class SshScreen implements Initializable {
                 p2pInstance.sendMessage(asCommand(getLastLine()));
             }
         });
+        /*
         terminal.addEventHandler(KeyEvent.KEY_RELEASED,(keyEvent) -> {
             if(keyEvent.getCode().toString().equals("ENTER")){
                 terminal.appendText(whoami);
             }
 
-        });
+        });*/
 
 
     }
