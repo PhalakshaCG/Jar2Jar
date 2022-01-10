@@ -31,7 +31,7 @@ public class SshScreen implements Initializable {
     private String whoami = "anonymous$ ";
     private final String cmdCode = "SSH-CMD-1337";
     private final String thisIsMe = "THIS-IS-ME$";
-
+    private final String delim = "`↵";
 
     CommandHandler commandHandler = new CommandHandler();
 
@@ -48,14 +48,14 @@ public class SshScreen implements Initializable {
                     String message = p2pInstance.fetchMessage();
                     if(isCommand(message)){
                         commandHandler.executeCommand(justCommand(message));
-                        p2pInstance.sendMessage(String.join("``",commandHandler.getOutput()));
+                        p2pInstance.sendMessage(String.join(delim,commandHandler.getOutput()));
                     }
                     else if(message.contains(thisIsMe)){
                         whoami = message.replace(thisIsMe,"").concat("$ ");
                         terminal.appendText(whoami);
                     }
                     else{
-                        addTerminalText(message.replace("``","\n"));
+                        addTerminalText(message.replace(delim,"\n"));
                     }
                 }catch (NullPointerException e){
                     //System.out.println("Received null");
