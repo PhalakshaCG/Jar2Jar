@@ -55,7 +55,7 @@ public class SshScreen implements Initializable {
                         terminal.appendText(whoami);
                     }
                     else{
-                        addTerminalText(message);
+                        terminal.appendText(message);
                     }
                 }catch (NullPointerException e){
                     //System.out.println("Received null");
