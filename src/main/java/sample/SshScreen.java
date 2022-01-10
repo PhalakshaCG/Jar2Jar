@@ -75,13 +75,13 @@ public class SshScreen implements Initializable {
                 p2pInstance.sendMessage(asCommand(getLastLine()));
             }
         });
-        /*
+
         terminal.addEventHandler(KeyEvent.KEY_RELEASED,(keyEvent) -> {
             if(keyEvent.getCode().toString().equals("ENTER")){
-                terminal.appendText(whoami);
+                terminal.appendText("");
             }
 
-        });*/
+        });
 
 
     }
