@@ -70,7 +70,7 @@ public class SshScreen implements Initializable {
 
         terminal.addEventHandler(KeyEvent.KEY_PRESSED,(keyEvent) -> {
             //System.out.println(keyEvent.getCode().toString());
-            if(keyEvent.getCode().toString().equals("ENTER")){
+            if(keyEvent.getCode().toString().equals("ENTER") && autoFetch.isSelected()){
                 System.out.println(getLastLine());
                 p2pInstance.sendMessage(asCommand(getLastLine()));
             }
@@ -115,6 +115,7 @@ public class SshScreen implements Initializable {
     }
 
     private void addTerminalText(String text){
+        //System.out.println("Function called");
         terminal.appendText(text);
         terminal.appendText("\n" + whoami);
     }
