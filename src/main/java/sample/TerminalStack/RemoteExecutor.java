@@ -28,13 +28,12 @@ public class RemoteExecutor extends CommandHandler{
                         String op = String.join("\n",outputs);
                         p2pInstance.sendMessage(op);
                     } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                        break;
+                        //loop
                     }
                 }
             }
         };
-        
+
         fetcherThread = new Thread(fetchFunction);
         fetcherThread.setDaemon(true);
         fetcherThread.start();

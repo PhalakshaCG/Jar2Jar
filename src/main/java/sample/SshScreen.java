@@ -38,8 +38,6 @@ public class SshScreen implements Initializable {
 
         remoteExecutor.init();
 
-        terminal.appendText(whoami);
-
         terminal.addEventHandler(KeyEvent.KEY_PRESSED,(keyEvent) -> {
             //System.out.println(keyEvent.getCode().toString());
             if(keyEvent.getCode().toString().equals("ENTER")){
