@@ -47,11 +47,11 @@ public class SshScreen implements Initializable {
                 try {
                     String message = p2pInstance.fetchMessage();
                     if(isCommand(message)){
-                        commandHandler.executeCommand(asCommand(message));
+                        commandHandler.executeCommand(justCommand(message));
                         p2pInstance.sendMessage(String.join("\n",commandHandler.getOutput()));
                     }
                     else{
-                        terminal.appendText(message);
+                        addTerminalText(message);
                     }
                 }catch (NullPointerException e){
                     //System.out.println("Received null");
@@ -68,7 +68,7 @@ public class SshScreen implements Initializable {
             //System.out.println(keyEvent.getCode().toString());
             if(keyEvent.getCode().toString().equals("ENTER")){
                 System.out.println(getLastLine());
-                p2pInstance.sendMessage(getLastLine());
+                p2pInstance.sendMessage(asCommand(getLastLine()));
             }
         });
         terminal.addEventHandler(KeyEvent.KEY_RELEASED,(keyEvent) -> {
@@ -100,5 +100,10 @@ public class SshScreen implements Initializable {
 
     private String justCommand(String cmd){
         return cmd.replace(cmdCode,"");
+    }
+
+    private void addTerminalText(String text){
+        terminal.appendText(text);
+        terminal.appendText("\n" + whoami);
     }
 }
