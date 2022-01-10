@@ -62,4 +62,15 @@ public class HomeScreen {
             sortScreen.stopThreads();
         });
     }
+
+    @FXML
+    void SshInterface(ActionEvent e) throws IOException {
+        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/ssh_screen.fxml")));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setTitle("Terminal");
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
 }
