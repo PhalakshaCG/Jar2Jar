@@ -42,6 +42,9 @@ public class SshScreen implements Initializable {
         p2pInstance = new sample.J2J.p2pNode();
         p2pInstance.connectToPeer();
         autoFetch.setSelected(true);
+
+        p2pInstance.sendMessage(asCommand("whoami"));
+        whoami = p2pInstance.fetchMessage();
         fetchFunction = () -> {
             while (autoFetch.isSelected()) {
                 try {
