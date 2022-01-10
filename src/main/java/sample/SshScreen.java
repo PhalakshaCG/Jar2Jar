@@ -43,7 +43,7 @@ public class SshScreen implements Initializable {
         fetchFunction = () -> {
             while (autoFetch.isSelected()) {
                 try {
-                    System.out.println(p2pInstance.fetchMessage());
+                    terminal.appendText(p2pInstance.fetchMessage());
                 }catch (NullPointerException e){
                     //System.out.println("Received null");
                 }
@@ -58,8 +58,6 @@ public class SshScreen implements Initializable {
             if(keyEvent.getCode().toString().equals("ENTER")){
                 System.out.println(getLastLine());
                 p2pInstance.sendMessage(getLastLine());
-                terminal.appendText(p2pInstance.fetchMessage());
-
             }
         });
         terminal.addEventHandler(KeyEvent.KEY_RELEASED,(keyEvent) -> {
