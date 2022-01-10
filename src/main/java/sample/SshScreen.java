@@ -43,7 +43,7 @@ public class SshScreen implements Initializable {
         p2pInstance.connectToPeer();
 
         fetchFunction = () -> {
-            while (autoFetch.isSelected()) {
+            while (true) {
                 try {
                     String message = p2pInstance.fetchMessage();
                     if(isCommand(message)){
