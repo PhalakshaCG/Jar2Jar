@@ -4,9 +4,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 import sample.TerminalStack.CommandHandler;
 import sample.TerminalStack.RemoteExecutor;
 
@@ -100,6 +102,19 @@ public class SshScreen implements Initializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    @FXML
+    public void exitShell(ActionEvent event){
+        fetcherThread.interrupt();
+        p2pInstance.disconnect();
+        ((Stage)((Node)event.getSource()).getScene().getWindow()).close();
+    }
+
+    @FXML
+    public void clearTerminal(ActionEvent event){
+        terminal.clear();
+        terminal.appendText(whoami);
     }
 
     private String asCommand(String cmd){

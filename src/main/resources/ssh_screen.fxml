@@ -21,7 +21,8 @@
          </font></TextArea>
       <ToolBar layoutY="320.0" prefHeight="40.0" prefWidth="553.0">
         <items>
-          <Button mnemonicParsing="false" text="Exit" />
+          <Button mnemonicParsing="false" onAction="#exitShell" text="Exit" />
+            <Button mnemonicParsing="false" onAction="#clearTerminal" text="Clear" />
             <ToggleButton fx:id="autoFetch" mnemonicParsing="false" onAction="#fetchFunction" prefHeight="25.0" prefWidth="71.0" text="Connect" />
         </items>
       </ToolBar>
