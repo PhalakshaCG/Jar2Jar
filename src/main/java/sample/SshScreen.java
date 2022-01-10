@@ -28,23 +28,37 @@ public class SshScreen implements Initializable {
     sample.J2J.p2pNode p2pInstance;
     Runnable fetchFunction;
 
-    String whoami;
+    String whoami = "anonymous$ ";
 
-    RemoteExecutor remoteExecutor = new RemoteExecutor();
+
+    CommandHandler commandHandler = new CommandHandler();
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        remoteExecutor.init();
+        p2pInstance = new sample.J2J.p2pNode();
+        p2pInstance.connectToPeer();
+        autoFetch.setSelected(true);
+        fetchFunction = () -> {
+            while (autoFetch.isSelected()) {
+                try {
+                    System.out.println(p2pInstance.fetchMessage());
+                }catch (NullPointerException e){
+                    //System.out.println("Received null");
+                }
+            }
+        };
+        fetcherThread = new Thread(fetchFunction);
+        fetcherThread.setDaemon(true);
+        fetcherThread.start();
 
         terminal.addEventHandler(KeyEvent.KEY_PRESSED,(keyEvent) -> {
             //System.out.println(keyEvent.getCode().toString());
             if(keyEvent.getCode().toString().equals("ENTER")){
-                System.out.println("Key pressed");
                 System.out.println(getLastLine());
-                for(String line: remoteExecutor.executeRemoteCommand(getLastLine()))
-                    terminal.appendText("\n" + line);
+                p2pInstance.sendMessage(getLastLine());
+                terminal.appendText(p2pInstance.fetchMessage());
 
             }
         });
@@ -64,11 +78,6 @@ public class SshScreen implements Initializable {
 
     @FXML
     public void fetchFunction(ActionEvent event) {
-        if(autoFetch.isSelected()){
-            remoteExecutor.init();
-        }
-        else{
-            remoteExecutor.stop();
-        }
+        System.out.println("ActionEvent");
     }
 }
