@@ -48,14 +48,14 @@ public class SshScreen implements Initializable {
                     String message = p2pInstance.fetchMessage();
                     if(isCommand(message)){
                         commandHandler.executeCommand(justCommand(message));
-                        p2pInstance.sendMessage(String.join("\n",commandHandler.getOutput()));
+                        p2pInstance.sendMessage(String.join("``",commandHandler.getOutput()));
                     }
                     else if(message.contains(thisIsMe)){
                         whoami = message.replace(thisIsMe,"").concat("$ ");
                         terminal.appendText(whoami);
                     }
                     else{
-                        addTerminalText(message);
+                        addTerminalText(message.replace("``","\n"));
                     }
                 }catch (NullPointerException e){
                     //System.out.println("Received null");
