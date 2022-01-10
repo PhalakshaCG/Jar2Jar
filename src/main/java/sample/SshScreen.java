@@ -28,9 +28,9 @@ public class SshScreen implements Initializable {
     sample.J2J.p2pNode p2pInstance;
     Runnable fetchFunction;
 
-    String whoami = "anonymous$ ";
-
+    private String whoami = "anonymous$ ";
     private final String cmdCode = "SSH-CMD-1337";
+    private final String thisIsMe = "THIS-IS-ME$";
 
 
     CommandHandler commandHandler = new CommandHandler();
@@ -42,9 +42,11 @@ public class SshScreen implements Initializable {
         p2pInstance = new sample.J2J.p2pNode();
         p2pInstance.connectToPeer();
         autoFetch.setSelected(true);
-
-        p2pInstance.sendMessage(asCommand("whoami"));
-        whoami = p2pInstance.fetchMessage();
+        try {
+            p2pInstance.sendMessage(getWhoAmI().concat(thisIsMe));
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
         fetchFunction = () -> {
             while (autoFetch.isSelected()) {
                 try {
@@ -52,6 +54,10 @@ public class SshScreen implements Initializable {
                     if(isCommand(message)){
                         commandHandler.executeCommand(justCommand(message));
                         p2pInstance.sendMessage(String.join("\n",commandHandler.getOutput()));
+                    }
+                    else if(message.contains(thisIsMe)){
+                        whoami = message.replace(thisIsMe,"").concat("$ ");
+                        terminal.appendText(whoami);
                     }
                     else{
                         addTerminalText(message);
@@ -81,6 +87,7 @@ public class SshScreen implements Initializable {
 
         });
 
+
     }
 
     private String getLastLine(){
@@ -108,5 +115,9 @@ public class SshScreen implements Initializable {
     private void addTerminalText(String text){
         terminal.appendText(text);
         terminal.appendText("\n" + whoami);
+    }
+
+    private String getWhoAmI() throws IOException, InterruptedException {
+        return String.join(" ",commandHandler.executeCommand("whoami"));
     }
 }
