@@ -30,6 +30,8 @@ public class SshScreen implements Initializable {
 
     String whoami = "anonymous$ ";
 
+    private final String cmdCode = "SSH-CMD-1337";
+
 
     CommandHandler commandHandler = new CommandHandler();
 
@@ -43,9 +45,18 @@ public class SshScreen implements Initializable {
         fetchFunction = () -> {
             while (autoFetch.isSelected()) {
                 try {
-                    terminal.appendText(p2pInstance.fetchMessage());
+                    String message = p2pInstance.fetchMessage();
+                    if(isCommand(message)){
+                        commandHandler.executeCommand(asCommand(message));
+                        p2pInstance.sendMessage(String.join("\n",commandHandler.getOutput()));
+                    }
+                    else{
+                        terminal.appendText(message);
+                    }
                 }catch (NullPointerException e){
                     //System.out.println("Received null");
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         };
@@ -77,5 +88,17 @@ public class SshScreen implements Initializable {
     @FXML
     public void fetchFunction(ActionEvent event) {
         System.out.println("ActionEvent");
+    }
+
+    private String asCommand(String cmd){
+        return cmdCode.concat(cmd);
+    }
+
+    private boolean isCommand(String cmd){
+        return cmd.contains(cmdCode);
+    }
+
+    private String justCommand(String cmd){
+        return cmd.replace(cmdCode,"");
     }
 }

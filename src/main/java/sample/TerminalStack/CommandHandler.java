@@ -41,11 +41,11 @@ public class CommandHandler {
         return dataStream;
     }
 
-    List<String> getOutput(){
+    public List<String> getOutput(){
         return dataStream;
     }
 
-    List<String> errorMessage(){
+    public List<String> errorMessage(){
         return errorStream;
     }
 
