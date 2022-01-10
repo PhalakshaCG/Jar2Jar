@@ -35,9 +35,7 @@ public class SshScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        p2pInstance = new sample.J2J.p2pNode();
-        p2pInstance.connectToPeer();
-        autoFetch.setSelected(true);
+
         remoteExecutor.init();
 
         terminal.appendText(whoami);

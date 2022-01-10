@@ -13,6 +13,10 @@ public class RemoteExecutor extends CommandHandler{
     Runnable fetchFunction;
 
     public RemoteExecutor(){
+
+    }
+
+    public void init(){
         p2pInstance = new p2pNode();
         p2pInstance.connectToPeer();
         fetchFunction = () ->{
@@ -30,9 +34,7 @@ public class RemoteExecutor extends CommandHandler{
                 }
             }
         };
-    }
-
-    public void init(){
+        
         fetcherThread = new Thread(fetchFunction);
         fetcherThread.setDaemon(true);
         fetcherThread.start();
