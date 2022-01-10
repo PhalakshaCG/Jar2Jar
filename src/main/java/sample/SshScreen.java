@@ -41,12 +41,7 @@ public class SshScreen implements Initializable {
 
         p2pInstance = new sample.J2J.p2pNode();
         p2pInstance.connectToPeer();
-        autoFetch.setSelected(true);
-        try {
-            p2pInstance.sendMessage(getWhoAmI().concat(thisIsMe));
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+
         fetchFunction = () -> {
             while (autoFetch.isSelected()) {
                 try {
@@ -97,7 +92,13 @@ public class SshScreen implements Initializable {
 
     @FXML
     public void fetchFunction(ActionEvent event) {
-        System.out.println("ActionEvent");
+        if(autoFetch.isSelected()){
+            try {
+                p2pInstance.sendMessage(getWhoAmI().concat(thisIsMe));
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private String asCommand(String cmd){
