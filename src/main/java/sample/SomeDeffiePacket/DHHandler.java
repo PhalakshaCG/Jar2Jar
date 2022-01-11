@@ -72,6 +72,11 @@ public class DHHandler {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
+        try {
+            BKeyAgree.doPhase(APublicKey,true);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
         byte[][] ret = {BKeyPair.getPublic().getEncoded(),BKeyAgree.generateSecret()};
         return ret;
     }

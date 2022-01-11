@@ -15,8 +15,10 @@ import sample.TerminalStack.RemoteExecutor;
 
 import javax.swing.text.Utilities;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class SshScreen implements Initializable {
@@ -79,6 +81,7 @@ public class SshScreen implements Initializable {
                         byte[] thatPubKey = StringtoByte(s);
                         byte[][] ret = new DHHandler().PublishGenPubKey(thatPubKey);
                         secretKey = ret[1];
+                        System.out.println("B    "+ Arrays.toString(secretKey));
                         String send =bytetoString(ret[0]);
                         send = send.replace("\n",delim);
                         send = send.concat(endTagB);
@@ -98,7 +101,7 @@ public class SshScreen implements Initializable {
                         messageB.append(message);
                         byte[] thatPubKey = StringtoByte(messageB.toString());
                         System.out.println(2);
-                        System.out.println("A    "+thatPubKey);
+                        System.out.println("A    "+Arrays.toString(thatPubKey));
                         secretKey = DHA.GenerateSecretKey(thatPubKey);
                         System.out.println(secretKey.length);
                         System.out.println(3);
