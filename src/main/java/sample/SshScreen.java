@@ -72,8 +72,9 @@ public class SshScreen implements Initializable {
                         message = message.replace(delim, "\n");
                         message = message.replace(endTagA, "");
                         message = message.replace(keyGenA, "");
-                        messageA.append(message);
-                        String s = messageA.toString().split("@$H")[1];
+                        //messageA.append(message);
+                        //String s = messageA.toString().split("@$H")[1];
+                        String s = message;
                         System.out.println(s);
                         byte[] thatPubKey = s.getBytes();
                         byte[][] ret = new DHHandler().PublishGenPubKey(thatPubKey);
