@@ -31,7 +31,7 @@ public class SshScreen implements Initializable {
     Thread fetcherThread;
     sample.J2J.p2pNode p2pInstance;
     Runnable fetchFunction;
-
+    int count=0;
     private String whoami = "anonymous$ ";
     private final String cmdCode = "SSH-CMD-1337";
     private final String thisIsMe = "THIS-IS-ME$";
@@ -61,16 +61,17 @@ public class SshScreen implements Initializable {
                         whoami = message.replace(thisIsMe,"").concat("$ ");
                         terminal.appendText(whoami);
                     }
-                    else if(message.contains(keyGenA)) {
+                    else if(message.contains(keyGenA)&&!message.contains(endTagA)) {
                         autoFetch.setSelected(true);
                         message = message.replace(delim, "\n");
                         message = message.replace(keyGenA, "");
                         messageA = new StringBuilder(message);
-                        System.out.println(keyGenA);
+                        System.out.println("\n"+keyGenA);
                     }
                     else if(message.contains(endTagA)){
                         message = message.replace(delim, "\n");
                         message = message.replace(endTagA, "");
+                        message = message.replace(keyGenA, "");
                         messageA.append(message);
                         byte[] thatPubKey = messageA.toString().getBytes();
                         byte[][] ret = new DHHandler().PublishGenPubKey(thatPubKey);
@@ -79,17 +80,18 @@ public class SshScreen implements Initializable {
                         send = send.replace("\n",delim);
                         send = send.concat(endTagB);
                         p2pInstance.sendMessage(keyGenB.concat(send));
-                        System.out.println(endTagA);
+                        System.out.println("\n"+endTagA);
                     }
-                    else if(message.contains(keyGenB)) {
+                    else if(message.contains(keyGenB)&&!message.contains(endTagB)) {
                         message = message.replace(delim, "\n");
                         message = message.replace(keyGenB, "");
                         messageB = new StringBuilder(message);
-                        System.out.println(keyGenB);
+                        System.out.println("\n"+keyGenB);
                     }
                     else if(message.contains(endTagB)){
                         message = message.replace(delim,"\n");
                         message = message.replace(endTagB,"");
+                        message = message.replace(keyGenB, "");
                         messageB.append(message);
                         byte[] thatPubKey = messageB.toString().getBytes();
                         System.out.println(2);
@@ -97,8 +99,8 @@ public class SshScreen implements Initializable {
                         secretKey = DHA.GenerateSecretKey(thatPubKey);
                         System.out.println(secretKey.length);
                         System.out.println(3);
-                        System.out.println(secretKey);
-                        System.out.println(endTagB);
+                        //System.out.println(secretKey);
+                        System.out.println("\n"+endTagB);
                     }
                     else if(message.contains(opCode)){
                         addTerminalText(message.replace(delim,"\n").replace(opCode,""));
@@ -107,7 +109,7 @@ public class SshScreen implements Initializable {
                         message = message.replace(delim,"\n");
                         messageA.append(message);
                         messageB.append(message);
-                        System.out.println("Appended");
+                        System.out.println("\n"+"Appended");
                     }
 
                 }catch (NullPointerException e){
