@@ -22,10 +22,13 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class SshScreen implements Initializable {
+
     @FXML
     TextArea terminal;
+
     @FXML
     ToggleButton autoFetch;
+
     Thread messengerThread;
     Thread fetcherThread;
     sample.J2J.p2pNode p2pInstance;
@@ -38,8 +41,8 @@ public class SshScreen implements Initializable {
     private final String keyGenA = "keyGenA";
     private final String keyGenB = "keyGenBFrickingBitch";
     private byte[] secretKey = null;
-    private final String endTagA = "frickA";
-    private final String endTagB = "frickB";
+    private final String endTagA = "frick_you";
+    private final String endTagB = "frickYouInTheButt";
     private final String opCode = "tatakae";
     //F
     private DHHandler DHA = new DHHandler();
@@ -153,15 +156,11 @@ public class SshScreen implements Initializable {
     @FXML
     public void fetchFunction(ActionEvent event) {
         if(autoFetch.isSelected()){
-            autoFetch.setSelected(true);
-            return;
-        }
-        if(autoFetch.isSelected()){
-           try {
-                p2pInstance.sendMessage(getWhoAmI().concat(thisIsMe));
+           /* try {
+               // p2pInstance.sendMessage(getWhoAmI().concat(thisIsMe));
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
             if(secretKey==null) {
                 byte[] thisPubKey = DHA.PublicKeyGenerator();
                 String pubKey = bytetoString(thisPubKey);
@@ -175,6 +174,7 @@ public class SshScreen implements Initializable {
 
         }
     }
+
     @FXML
     public void exitShell(ActionEvent event){
         fetcherThread.interrupt();
