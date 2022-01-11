@@ -62,15 +62,22 @@ public class SshScreen implements Initializable {
                     }
                     else if(message.contains(keyGenA)){
                         autoFetch.setSelected(true);
+                        message=message.replace(delim,"\n");
                         byte[] thatPubKey = message.replace(keyGenA,"").getBytes();
                         byte[][] ret = new DHHandler().PublishGenPubKey(thatPubKey);
                         secretKey = ret[1];
-                        p2pInstance.sendMessage(keyGenB.concat(new String(ret[0])));
+                        String send =new String(ret[0]);
+                        send = send.replace("\n",delim);
+                        p2pInstance.sendMessage(keyGenB.concat(send));
                     }
                     else if(message.contains(keyGenB)){
+                        message=message.replace(delim,"\n");
                         byte[] thatPubKey = message.replace(keyGenB,"").getBytes();
+                        System.out.println(2);
+                        System.out.println("A    "+thatPubKey);
                         secretKey = DHA.GenerateSecretKey(thatPubKey);
                         System.out.println(secretKey.length);
+                        System.out.println(3);
                         System.out.println(secretKey);
                     }
                     else{
@@ -122,7 +129,9 @@ public class SshScreen implements Initializable {
             if(secretKey==null) {
                 byte[] thisPubKey = DHA.PublicKeyGenerator();
                 String pubKey = new String(thisPubKey);
+                pubKey.replace("\n",delim);
                 p2pInstance.sendMessage(keyGenA.concat(pubKey));
+                System.out.println(1);
             }
 
 
