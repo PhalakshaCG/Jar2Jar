@@ -76,10 +76,10 @@ public class SshScreen implements Initializable {
                         //String s = messageA.toString().split("@$H")[1];
                         String s = message;
                         System.out.println(s);
-                        byte[] thatPubKey = s.getBytes();
+                        byte[] thatPubKey = s.getBytes(StandardCharsets.UTF_8);
                         byte[][] ret = new DHHandler().PublishGenPubKey(thatPubKey);
                         secretKey = ret[1];
-                        String send =new String(ret[0]);
+                        String send =new String(ret[0],StandardCharsets.UTF_8);
                         send = send.replace("\n",delim);
                         send = send.concat(endTagB);
                         p2pInstance.sendMessage(keyGenB.concat(send));
@@ -96,7 +96,7 @@ public class SshScreen implements Initializable {
                         message = message.replace(endTagB,"");
                         message = message.replace(keyGenB, "");
                         messageB.append(message);
-                        byte[] thatPubKey = messageB.toString().getBytes();
+                        byte[] thatPubKey = messageB.toString().getBytes(StandardCharsets.UTF_8);
                         System.out.println(2);
                         System.out.println("A    "+thatPubKey);
                         secretKey = DHA.GenerateSecretKey(thatPubKey);
@@ -159,7 +159,7 @@ public class SshScreen implements Initializable {
             }*/
             if(secretKey==null) {
                 byte[] thisPubKey = DHA.PublicKeyGenerator();
-                String pubKey = new String(thisPubKey);
+                String pubKey = new String(thisPubKey,StandardCharsets.UTF_8);
                 System.out.println(pubKey);
                 pubKey = pubKey.replace("\n",delim);
                 pubKey = pubKey.concat(endTagA);
