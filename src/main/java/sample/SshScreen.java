@@ -36,8 +36,8 @@ public class SshScreen implements Initializable {
     private final String cmdCode = "SSH-CMD-1337";
     private final String thisIsMe = "THIS-IS-ME$";
     private final String delim = "`↵";
-    private final String keyGenA = "Dej(85((";
-    private final String keyGenB = "ekodnoa8*";
+    private final String keyGenA = "keyGenA";
+    private final String keyGenB = "keyGenBFrickingBitch";
     private byte[] secretKey = null;
     private final String endTagA = "frick_you";
     private final String endTagB = "frickYouInTheButt";
@@ -66,6 +66,7 @@ public class SshScreen implements Initializable {
                         message = message.replace(delim, "\n");
                         message = message.replace(keyGenA, "");
                         messageA = new StringBuilder(message);
+                        System.out.println(keyGenA);
                     }
                     else if(message.contains(endTagA)){
                         message = message.replace(delim, "\n");
@@ -78,11 +79,13 @@ public class SshScreen implements Initializable {
                         send = send.replace("\n",delim);
                         send = send.concat(endTagB);
                         p2pInstance.sendMessage(keyGenB.concat(send));
+                        System.out.println(endTagA);
                     }
                     else if(message.contains(keyGenB)) {
                         message = message.replace(delim, "\n");
                         message = message.replace(keyGenB, "");
                         messageB = new StringBuilder(message);
+                        System.out.println(keyGenB);
                     }
                     else if(message.contains(endTagB)){
                         message = message.replace(delim,"\n");
@@ -95,6 +98,7 @@ public class SshScreen implements Initializable {
                         System.out.println(secretKey.length);
                         System.out.println(3);
                         System.out.println(secretKey);
+                        System.out.println(endTagB);
                     }
                     else if(message.contains(opCode)){
                         addTerminalText(message.replace(delim,"\n").replace(opCode,""));
