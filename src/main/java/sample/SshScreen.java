@@ -47,7 +47,6 @@ public class SshScreen implements Initializable {
     StringBuilder messageA,messageB;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         p2pInstance = new sample.J2J.p2pNode();
         p2pInstance.connectToPeer();
         fetchFunction = () -> {
@@ -86,6 +85,7 @@ public class SshScreen implements Initializable {
                         messageB = new StringBuilder(message);
                     }
                     else if(message.contains(endTagB)){
+                        message = message.replace(delim,"\n");
                         message = message.replace(endTagB,"");
                         messageB.append(message);
                         byte[] thatPubKey = messageB.toString().getBytes();
@@ -143,11 +143,11 @@ public class SshScreen implements Initializable {
     @FXML
     public void fetchFunction(ActionEvent event) {
         if(autoFetch.isSelected()){
-            try {
-                p2pInstance.sendMessage(getWhoAmI().concat(thisIsMe));
+           /* try {
+               // p2pInstance.sendMessage(getWhoAmI().concat(thisIsMe));
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
             if(secretKey==null) {
                 byte[] thisPubKey = DHA.PublicKeyGenerator();
                 String pubKey = new String(thisPubKey);
