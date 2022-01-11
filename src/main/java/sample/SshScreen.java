@@ -9,12 +9,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import sample.SomeDeffiePacket.DHHandler;
 import sample.TerminalStack.CommandHandler;
 import sample.TerminalStack.RemoteExecutor;
 
 import javax.swing.text.Utilities;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 
 public class SshScreen implements Initializable {
@@ -34,7 +36,10 @@ public class SshScreen implements Initializable {
     private final String cmdCode = "SSH-CMD-1337";
     private final String thisIsMe = "THIS-IS-ME$";
     private final String delim = "`↵";
-
+    private final String keyGenA = "Dej(85((";
+    private final String keyGenB = "ekodnoa8*";
+    private byte[] secretKey = null;
+    private DHHandler DHA = new DHHandler();
     CommandHandler commandHandler = new CommandHandler();
 
 
@@ -43,7 +48,6 @@ public class SshScreen implements Initializable {
 
         p2pInstance = new sample.J2J.p2pNode();
         p2pInstance.connectToPeer();
-
         fetchFunction = () -> {
             while (true) {
                 try {
@@ -56,9 +60,23 @@ public class SshScreen implements Initializable {
                         whoami = message.replace(thisIsMe,"").concat("$ ");
                         terminal.appendText(whoami);
                     }
+                    else if(message.contains(keyGenA)){
+                        autoFetch.setSelected(true);
+                        byte[] thatPubKey = message.replace(keyGenA,"").getBytes();
+                        byte[][] ret = new DHHandler().PublishGenPubKey(thatPubKey);
+                        secretKey = ret[1];
+                        p2pInstance.sendMessage(keyGenB.concat(new String(ret[0])));
+                    }
+                    else if(message.contains(keyGenB)){
+                        byte[] thatPubKey = message.replace(keyGenB,"").getBytes();
+                        secretKey = DHA.GenerateSecretKey(thatPubKey);
+                        System.out.println(secretKey.length);
+                        System.out.println(secretKey);
+                    }
                     else{
                         addTerminalText(message.replace(delim,"\n"));
                     }
+
                 }catch (NullPointerException e){
                     //System.out.println("Received null");
                 } catch (IOException | InterruptedException e) {
@@ -101,6 +119,13 @@ public class SshScreen implements Initializable {
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
+            if(secretKey==null) {
+                byte[] thisPubKey = DHA.PublicKeyGenerator();
+                String pubKey = new String(thisPubKey);
+                p2pInstance.sendMessage(keyGenA.concat(pubKey));
+            }
+
+
         }
     }
 

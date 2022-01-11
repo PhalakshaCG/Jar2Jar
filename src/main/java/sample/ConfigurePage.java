@@ -12,7 +12,6 @@ import sample.SorterStack.PrefWriter;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 public class ConfigurePage implements Initializable {
 
@@ -53,4 +52,5 @@ public class ConfigurePage implements Initializable {
         length.setText(Integer.toString( new PrefWriter().getLength()));
         range.setText(Integer.toString( new PrefWriter().getRange()));
     }
+
 }

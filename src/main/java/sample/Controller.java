@@ -68,6 +68,7 @@ public class Controller implements Initializable, EventListener {
         fetcherThread = new Thread(fetchFunction);
         fetcherThread.setDaemon(true);
         fetcherThread.start();
+
     }
 
     public void closeWindow(){

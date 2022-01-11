@@ -1,4 +1,5 @@
 package sample.J2J;
+import sample.DHA;
 import sample.J2J.ClientServerStack.*;
 
 import java.io.IOException;
@@ -13,7 +14,8 @@ public class p2pNode {
     String fetchMessage = "...";
     Thread serverInitThread;
     Thread clientInitThread;
-
+    boolean connect = true;
+    Thread DH = new Thread(new DHA(this));
     public p2pNode(int portNumber, String ipAddress){
         assert false;
         instance.setIPAddress(ipAddress);
@@ -59,6 +61,10 @@ public class p2pNode {
                 } catch (IOException ignored) {}
             }
             System.out.println("Connection established");
+            if(connect){
+                DH.start();
+                connect = false;
+            }
         });
         serverInitThread.setDaemon(true);
         clientInitThread.setDaemon(true);
