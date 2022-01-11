@@ -76,10 +76,10 @@ public class SshScreen implements Initializable {
                         //String s = messageA.toString().split("@$H")[1];
                         String s = message;
                         System.out.println(s);
-                        byte[] thatPubKey = s.getBytes(StandardCharsets.UTF_8);
+                        byte[] thatPubKey = StringtoByte(s);
                         byte[][] ret = new DHHandler().PublishGenPubKey(thatPubKey);
                         secretKey = ret[1];
-                        String send =new String(ret[0],StandardCharsets.UTF_8);
+                        String send =bytetoString(ret[0]);
                         send = send.replace("\n",delim);
                         send = send.concat(endTagB);
                         p2pInstance.sendMessage(keyGenB.concat(send));
@@ -96,7 +96,7 @@ public class SshScreen implements Initializable {
                         message = message.replace(endTagB,"");
                         message = message.replace(keyGenB, "");
                         messageB.append(message);
-                        byte[] thatPubKey = messageB.toString().getBytes(StandardCharsets.UTF_8);
+                        byte[] thatPubKey = StringtoByte(messageB.toString());
                         System.out.println(2);
                         System.out.println("A    "+thatPubKey);
                         secretKey = DHA.GenerateSecretKey(thatPubKey);
@@ -159,7 +159,7 @@ public class SshScreen implements Initializable {
             }*/
             if(secretKey==null) {
                 byte[] thisPubKey = DHA.PublicKeyGenerator();
-                String pubKey = new String(thisPubKey,StandardCharsets.UTF_8);
+                String pubKey = bytetoString(thisPubKey);
                 System.out.println(pubKey);
                 pubKey = pubKey.replace("\n",delim);
                 pubKey = pubKey.concat(endTagA);
@@ -200,6 +200,33 @@ public class SshScreen implements Initializable {
         //System.out.println("Function called");
         terminal.appendText(text);
         terminal.appendText("\n" + whoami);
+    }
+    public String bytetoString(byte[] byteArray){
+
+            String hex = "";
+            // Iterating through each byte in the array
+            for (byte i : byteArray) {
+                hex += String.format("%02X", i);
+            }
+            return (hex);
+
+    }
+    public byte[] StringtoByte(String s){
+        byte[] ans = new byte[s.length() / 2];
+        //System.out.println("Hex String : "+s);
+        for (int i = 0; i < ans.length; i++) {
+            int index = i * 2;
+            // Using parseInt() method of Integer class
+            int val = Integer.parseInt(s.substring(index, index + 2), 16);
+            ans[i] = (byte)val;
+        }
+
+        // Printing the required Byte Array
+        System.out.print("Byte Array : ");
+        for (int i = 0; i < ans.length; i++) {
+            System.out.print(ans[i] + " ");
+        }
+        return ans;
     }
 
     private String getWhoAmI() throws IOException, InterruptedException {
