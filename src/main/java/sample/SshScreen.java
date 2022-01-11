@@ -44,6 +44,7 @@ public class SshScreen implements Initializable {
     private final String endTagA = "frick_you";
     private final String endTagB = "frickYouInTheButt";
     private final String opCode = "tatakae";
+    //F
     private DHHandler DHA = new DHHandler();
     CommandHandler commandHandler = new CommandHandler();
     StringBuilder messageA=new StringBuilder(),messageB = new StringBuilder();
