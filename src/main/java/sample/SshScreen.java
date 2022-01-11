@@ -44,7 +44,7 @@ public class SshScreen implements Initializable {
     private final String opCode = "tatakae";
     private DHHandler DHA = new DHHandler();
     CommandHandler commandHandler = new CommandHandler();
-    StringBuilder messageA,messageB;
+    StringBuilder messageA=new StringBuilder(),messageB = new StringBuilder();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         p2pInstance = new sample.J2J.p2pNode();
@@ -73,7 +73,9 @@ public class SshScreen implements Initializable {
                         message = message.replace(endTagA, "");
                         message = message.replace(keyGenA, "");
                         messageA.append(message);
-                        byte[] thatPubKey = messageA.toString().getBytes();
+                        String s = messageA.toString().split("@$H")[1];
+                        System.out.println(s);
+                        byte[] thatPubKey = s.getBytes();
                         byte[][] ret = new DHHandler().PublishGenPubKey(thatPubKey);
                         secretKey = ret[1];
                         String send =new String(ret[0]);
@@ -157,6 +159,7 @@ public class SshScreen implements Initializable {
             if(secretKey==null) {
                 byte[] thisPubKey = DHA.PublicKeyGenerator();
                 String pubKey = new String(thisPubKey);
+                System.out.println(pubKey);
                 pubKey = pubKey.replace("\n",delim);
                 pubKey = pubKey.concat(endTagA);
                 p2pInstance.sendMessage(keyGenA.concat(pubKey));

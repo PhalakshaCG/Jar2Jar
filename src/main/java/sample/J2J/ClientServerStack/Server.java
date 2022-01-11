@@ -14,7 +14,7 @@ public class Server extends BaseNode {
     public String receiveFromClient() throws IOException {
         //System.out.println("\nReceiving from client...");
         this.data = inputReader.readLine();
-        System.out.println(data);
+        //System.out.println(data);
         outputWriter.println("Received");
         return data;
     }
