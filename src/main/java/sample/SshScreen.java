@@ -60,6 +60,7 @@ public class SshScreen implements Initializable {
                     String message = p2pInstance.fetchMessage();
                     if(isCommand(message)){
                         message=justCommand(message);
+                        System.out.println("Received encoded cmd:"+message+"-&-");
                         message=cipher.decode(message,secretKey);
                         commandHandler.executeCommand(message);
                         p2pInstance.sendMessage(String.join(delim,commandHandler.getOutput()).concat(opCode));
@@ -146,6 +147,7 @@ public class SshScreen implements Initializable {
                 s=cipher.getEncodedString(s,secretKey);
                 param = cipher.encodeParams;
                 p2pInstance.sendMessage(paramTag.concat(param));
+                System.out.println("Encoded :"+s+"-&-");
                 p2pInstance.sendMessage(asCommand(s));
             }
         });
