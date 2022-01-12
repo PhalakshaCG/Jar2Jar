@@ -6,6 +6,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -21,7 +23,8 @@ public class CipherTextGenerator {
             e.printStackTrace();
         }
         encodeParams = bytetoString(array[1]);
-        return new String(array[0]);
+        return new String(array[0],StandardCharsets.ISO_8859_1);
+
     }
     public byte[][] encode(String message,byte[] secret) throws IOException {
         SecretKeySpec keySpec =new SecretKeySpec(secret, 0, 16, "AES");
@@ -38,7 +41,7 @@ public class CipherTextGenerator {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-        byte[] messageByte = message.getBytes();
+        byte[] messageByte = message.getBytes(StandardCharsets.ISO_8859_1);
         byte[] ciphertext = new byte[0];
         try {
             ciphertext = cipher.doFinal(messageByte);
@@ -51,7 +54,7 @@ public class CipherTextGenerator {
         return ret;
     }
     public String decode(String cipherText,byte[] secret){
-        byte[][] crypt = new byte[][]{cipherText.getBytes(),StringtoByte(decodeParams)};
+        byte[][] crypt = new byte[][]{cipherText.getBytes(StandardCharsets.ISO_8859_1),StringtoByte(decodeParams)};
         SecretKeySpec aesKey = new SecretKeySpec(secret, 0, 16, "AES");
         byte[] encodedParams = crypt[1];
         AlgorithmParameters aesParams = null;
@@ -88,7 +91,7 @@ public class CipherTextGenerator {
         } catch (BadPaddingException e) {
             e.printStackTrace();
         }
-        return new String(recovered);
+            return new String(recovered,StandardCharsets.ISO_8859_1);
     }
     public String bytetoString(byte[] byteArray){
 
