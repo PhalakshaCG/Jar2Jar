@@ -140,6 +140,8 @@ public class SshScreen implements Initializable {
                         terminal.appendText(whoami);
                     }
                     else if(message.contains(exitRequest)){
+                        p2pInstance.sendMessage(exitRequest);
+                        p2pInstance.disconnect();
                         break;
                     }
                     else{
@@ -213,9 +215,7 @@ public class SshScreen implements Initializable {
 
     @FXML
     public void exitShell(ActionEvent event){
-        fetcherThread.interrupt();
         p2pInstance.sendMessage(exitRequest);
-        p2pInstance.disconnect();
         ((Stage)((Node)event.getSource()).getScene().getWindow()).close();
     }
 
