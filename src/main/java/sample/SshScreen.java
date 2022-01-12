@@ -39,6 +39,7 @@ public class SshScreen implements Initializable {
     private final String cmdCode = "SSH-CMD-1337";
     private final String thisIsMe = "THIS-IS-ME$";
     private final String delim = "`↵";
+    private final String delim1 = "`+`";
     private final String keyGenA = "keyGenA";
     private final String keyGenB = "keyGenBFrickingBitch";
     private final String paramTag = "!^Params^";
@@ -64,6 +65,7 @@ public class SshScreen implements Initializable {
                         message=cipher.decode(message,secretKey);
                         commandHandler.executeCommand(message);
                         String s =String.join(delim,commandHandler.getOutput());
+                        s = s.replace("\n",delim);
                         s = cipher.getEncodedString(s,secretKey);
                         System.out.println("Encoded response - "+s+"-$-");
                         p2pInstance.sendMessage(paramTag.concat(cipher.encodeParams));
