@@ -36,7 +36,7 @@ public class SshScreen implements Initializable {
     sample.J2J.p2pNode p2pInstance;
     Runnable fetchFunction;
     int count=0;
-    private String whoami = "anonymous$ ";
+    private String whoami = "$ ";
     private final String cmdCode = "SSH-CMD-1337";
     private final String thisIsMe = "THIS-IS-ME$";
     private final String delim = "`↵";
@@ -48,6 +48,7 @@ public class SshScreen implements Initializable {
     private final String endTagA = "frick_you";
     private final String endTagB = "frickYouInTheButt";
     private final String opCode = "tatakae";
+    private final String exitRequest = "ℬ𝓎𝓮";
     CipherTextGenerator cipher = new CipherTextGenerator();
     private DHHandler DHA = new DHHandler();
     CommandHandler commandHandler = new CommandHandler();
@@ -56,6 +57,7 @@ public class SshScreen implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         p2pInstance = new sample.J2J.p2pNode();
         p2pInstance.connectToPeer();
+
         fetchFunction = () -> {
             while (true) {
                 try {
@@ -78,13 +80,13 @@ public class SshScreen implements Initializable {
                         }
                     }
                     else if(message.contains(keyGenA)&&!message.contains(endTagA)) {
-                        autoFetch.setSelected(true);
                         message = message.replace(delim, "\n");
                         message = message.replace(keyGenA, "");
                         messageA = new StringBuilder(message);
                         System.out.println("\n"+keyGenA);
                     }
                     else if(message.contains(endTagA)){
+                        autoFetch.setSelected(true);
                         message = message.replace(delim, "\n");
                         message = message.replace(endTagA, "");
                         message = message.replace(keyGenA, "");
@@ -126,7 +128,7 @@ public class SshScreen implements Initializable {
                         message=message.replace(opCode,"");
                         System.out.println("Decoded response - "+message+"-$-");
                         message = cipher.decode(message,secretKey);
-                        terminal.appendText("\n"+message.replace(delim,"\n"));
+                        terminal.appendText(message.replace(delim,"\n") + "\n");
                     }
                     else if(message.contains(paramTag)){
                         message=message.replace(paramTag,"");
@@ -136,6 +138,10 @@ public class SshScreen implements Initializable {
                     else if(message.contains(thisIsMe)){
                         whoami = message.replace(thisIsMe,"").concat("$ ");
                         terminal.appendText(whoami);
+                    }
+                    else if(message.contains(exitRequest)){
+                        p2pInstance.disconnect();
+                        break;
                     }
                     else{
                         message = message.replace(delim,"\n");
@@ -164,7 +170,7 @@ public class SshScreen implements Initializable {
                 param = cipher.encodeParams;
                 p2pInstance.sendMessage(paramTag.concat(param));
                 System.out.println("Encoded :"+s+"-&-");
-                terminal.appendText(" $sent encoded as '"+s+"'");
+                //terminal.appendText(" $sent encoded as '"+s+"'");
                 p2pInstance.sendMessage(asCommand(s));
             }
         });
@@ -207,6 +213,7 @@ public class SshScreen implements Initializable {
     @FXML
     public void exitShell(ActionEvent event){
         fetcherThread.interrupt();
+        p2pInstance.sendMessage(exitRequest);
         p2pInstance.disconnect();
         ((Stage)((Node)event.getSource()).getScene().getWindow()).close();
     }
