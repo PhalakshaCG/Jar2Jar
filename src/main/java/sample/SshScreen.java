@@ -77,10 +77,6 @@ public class SshScreen implements Initializable {
                             p2pInstance.sendMessage(s.concat(opCode));
                         }
                     }
-                    else if(message.contains(thisIsMe)){
-                        whoami = message.replace(thisIsMe,"").concat("$ ");
-                        terminal.appendText(whoami);
-                    }
                     else if(message.contains(keyGenA)&&!message.contains(endTagA)) {
                         autoFetch.setSelected(true);
                         message = message.replace(delim, "\n");
@@ -130,11 +126,16 @@ public class SshScreen implements Initializable {
                         message=message.replace(opCode,"");
                         System.out.println("Decoded response - "+message+"-$-");
                         message = cipher.decode(message,secretKey);
-                        addTerminalText(message.replace(delim,"\n"));
+                        terminal.appendText("\n"+message.replace(delim,"\n"));
                     }
                     else if(message.contains(paramTag)){
                         message=message.replace(paramTag,"");
                         cipher.decodeParams = message;
+                    }
+
+                    else if(message.contains(thisIsMe)){
+                        whoami = message.replace(thisIsMe,"").concat("$ ");
+                        terminal.appendText(whoami);
                     }
                     else{
                         message = message.replace(delim,"\n");
