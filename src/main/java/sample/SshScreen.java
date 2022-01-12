@@ -146,9 +146,7 @@ public class SshScreen implements Initializable {
                 s=cipher.getEncodedString(s,secretKey);
                 param = cipher.encodeParams;
                 p2pInstance.sendMessage(paramTag.concat(param));
-                System.out.println("Encoding params -"+param);
                 p2pInstance.sendMessage(asCommand(s));
-                System.out.println("Crypt text - "+s);
             }
         });
 

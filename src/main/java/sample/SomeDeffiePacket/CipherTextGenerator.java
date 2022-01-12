@@ -21,7 +21,7 @@ public class CipherTextGenerator {
             e.printStackTrace();
         }
         encodeParams = bytetoString(array[1]);
-        return bytetoString(array[0]);
+        return new String(array[0]);
     }
     public byte[][] encode(String message,byte[] secret) throws IOException {
         SecretKeySpec keySpec =new SecretKeySpec(secret, 0, 16, "AES");
@@ -38,7 +38,7 @@ public class CipherTextGenerator {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-        byte[] messageByte = StringtoByte(message);
+        byte[] messageByte = message.getBytes();
         byte[] ciphertext = new byte[0];
         try {
             ciphertext = cipher.doFinal(messageByte);
@@ -51,7 +51,7 @@ public class CipherTextGenerator {
         return ret;
     }
     public String decode(String cipherText,byte[] secret){
-        byte[][] crypt = new byte[][]{StringtoByte(cipherText),StringtoByte(decodeParams)};
+        byte[][] crypt = new byte[][]{cipherText.getBytes(),StringtoByte(decodeParams)};
         SecretKeySpec aesKey = new SecretKeySpec(secret, 0, 16, "AES");
         byte[] encodedParams = crypt[1];
         AlgorithmParameters aesParams = null;
@@ -88,7 +88,7 @@ public class CipherTextGenerator {
         } catch (BadPaddingException e) {
             e.printStackTrace();
         }
-        return bytetoString(recovered);
+        return new String(recovered);
     }
     public String bytetoString(byte[] byteArray){
 
