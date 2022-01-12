@@ -20,6 +20,7 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class SshScreen implements Initializable {
@@ -64,12 +65,17 @@ public class SshScreen implements Initializable {
                         System.out.println("Received encoded cmd:"+message+"-&-");
                         message=cipher.decode(message,secretKey);
                         commandHandler.executeCommand(message);
-                        String s =String.join(delim,commandHandler.getOutput());
-                        s = s.replace("\n",delim);
-                        s = cipher.getEncodedString(s,secretKey);
-                        System.out.println("Encoded response - "+s+"-$-");
-                        p2pInstance.sendMessage(paramTag.concat(cipher.encodeParams));
-                        p2pInstance.sendMessage(s.concat(opCode));
+                        List<String> stringList = commandHandler.getOutput();
+
+                        String s ;//=String.join(delim,commandHandler.getOutput());
+                        for(int i=0;i<stringList.size();i++){
+                            s=stringList.get(i);
+                            s = s.replace("\n",delim);
+                            s = cipher.getEncodedString(s,secretKey);
+                            System.out.println("Encoded response - "+s+"-$-  "+i);
+                            p2pInstance.sendMessage(paramTag.concat(cipher.encodeParams));
+                            p2pInstance.sendMessage(s.concat(opCode));
+                        }
                     }
                     else if(message.contains(thisIsMe)){
                         whoami = message.replace(thisIsMe,"").concat("$ ");
