@@ -141,7 +141,7 @@ public class SshScreen implements Initializable {
                     }
                     else if(message.contains(exitRequest)){
                         p2pInstance.disconnect();
-                        break;
+                        fetcherThread.interrupt();
                     }
                     else{
                         message = message.replace(delim,"\n");
