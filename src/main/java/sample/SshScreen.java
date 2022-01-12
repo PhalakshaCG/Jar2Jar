@@ -140,8 +140,7 @@ public class SshScreen implements Initializable {
                         terminal.appendText(whoami);
                     }
                     else if(message.contains(exitRequest)){
-                        p2pInstance.disconnect();
-                        fetcherThread.interrupt();
+                        break;
                     }
                     else{
                         message = message.replace(delim,"\n");
@@ -156,6 +155,8 @@ public class SshScreen implements Initializable {
                     e.printStackTrace();
                 }
             }
+            p2pInstance.disconnect();
+
         };
         fetcherThread = new Thread(fetchFunction);
         fetcherThread.setDaemon(true);
