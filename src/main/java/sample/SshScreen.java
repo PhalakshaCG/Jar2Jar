@@ -63,7 +63,10 @@ public class SshScreen implements Initializable {
                         System.out.println("Received encoded cmd:"+message+"-&-");
                         message=cipher.decode(message,secretKey);
                         commandHandler.executeCommand(message);
-                        p2pInstance.sendMessage(String.join(delim,commandHandler.getOutput()).concat(opCode));
+                        String s =String.join(delim,commandHandler.getOutput());
+                        s = cipher.getEncodedString(s,secretKey);
+                        p2pInstance.sendMessage(paramTag.concat(cipher.encodeParams));
+                        p2pInstance.sendMessage(s.concat(opCode));
                     }
                     else if(message.contains(thisIsMe)){
                         whoami = message.replace(thisIsMe,"").concat("$ ");
@@ -115,7 +118,9 @@ public class SshScreen implements Initializable {
                        // System.out.println("\n"+endTagB);
                     }
                     else if(message.contains(opCode)){
-                        addTerminalText(message.replace(delim,"\n").replace(opCode,""));
+                        message=message.replace(opCode,"");
+                        message = cipher.decode(message,secretKey);
+                        addTerminalText(message.replace(delim,"\n"));
                     }
                     else if(message.contains(paramTag)){
                         message=message.replace(paramTag,"");
@@ -148,6 +153,7 @@ public class SshScreen implements Initializable {
                 param = cipher.encodeParams;
                 p2pInstance.sendMessage(paramTag.concat(param));
                 System.out.println("Encoded :"+s+"-&-");
+                terminal.appendText("encoded as '"+s+"'");
                 p2pInstance.sendMessage(asCommand(s));
             }
         });
