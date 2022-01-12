@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import sample.SomeDeffiePacket.CipherTextGenerator;
 import sample.SomeDeffiePacket.DHHandler;
 import sample.TerminalStack.CommandHandler;
 import sample.TerminalStack.RemoteExecutor;
@@ -40,11 +41,12 @@ public class SshScreen implements Initializable {
     private final String delim = "`↵";
     private final String keyGenA = "keyGenA";
     private final String keyGenB = "keyGenBFrickingBitch";
+    private final String paramTag = "!^Params^";
     private byte[] secretKey = null;
     private final String endTagA = "frick_you";
     private final String endTagB = "frickYouInTheButt";
     private final String opCode = "tatakae";
-    //F
+    CipherTextGenerator cipher = new CipherTextGenerator();
     private DHHandler DHA = new DHHandler();
     CommandHandler commandHandler = new CommandHandler();
     StringBuilder messageA=new StringBuilder(),messageB = new StringBuilder();
@@ -57,7 +59,9 @@ public class SshScreen implements Initializable {
                 try {
                     String message = p2pInstance.fetchMessage();
                     if(isCommand(message)){
-                        commandHandler.executeCommand(justCommand(message));
+                        message=justCommand(message);
+                        message=cipher.decode(message,secretKey);
+                        commandHandler.executeCommand(message);
                         p2pInstance.sendMessage(String.join(delim,commandHandler.getOutput()).concat(opCode));
                     }
                     else if(message.contains(thisIsMe)){
@@ -87,7 +91,7 @@ public class SshScreen implements Initializable {
                         send = send.replace("\n",delim);
                         send = send.concat(endTagB);
                         p2pInstance.sendMessage(keyGenB.concat(send));
-                        System.out.println("\n"+endTagA);
+                        //System.out.println("\n"+endTagA);
                     }
                     else if(message.contains(keyGenB)&&!message.contains(endTagB)) {
                         message = message.replace(delim, "\n");
@@ -107,10 +111,14 @@ public class SshScreen implements Initializable {
                         System.out.println(secretKey.length);
                         System.out.println(3);
                         //System.out.println(secretKey);
-                        System.out.println("\n"+endTagB);
+                       // System.out.println("\n"+endTagB);
                     }
                     else if(message.contains(opCode)){
                         addTerminalText(message.replace(delim,"\n").replace(opCode,""));
+                    }
+                    else if(message.contains(paramTag)){
+                        message=message.replace(paramTag,"");
+                        cipher.decodeParams = message;
                     }
                     else{
                         message = message.replace(delim,"\n");
@@ -133,8 +141,12 @@ public class SshScreen implements Initializable {
         terminal.addEventHandler(KeyEvent.KEY_PRESSED,(keyEvent) -> {
             //System.out.println(keyEvent.getCode().toString());
             if(keyEvent.getCode().toString().equals("ENTER") && autoFetch.isSelected()){
-                System.out.println(getLastLine());
-                p2pInstance.sendMessage(asCommand(getLastLine()));
+                String s = getLastLine(),param;
+                System.out.println(s);
+                s=cipher.getEncodedString(s,secretKey);
+                param = cipher.encodeParams;
+                p2pInstance.sendMessage(paramTag.concat(param));
+                p2pInstance.sendMessage(asCommand(s));
             }
         });
 
@@ -144,8 +156,6 @@ public class SshScreen implements Initializable {
             }
 
         });
-
-
     }
 
     private String getLastLine(){

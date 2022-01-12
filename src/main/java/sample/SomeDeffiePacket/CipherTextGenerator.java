@@ -12,6 +12,17 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 public class CipherTextGenerator {
+    public String encodeParams,decodeParams;
+    public String getEncodedString(String message,byte[] secret){
+        byte[][] array=null;
+        try {
+            array = encode(message,secret);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        encodeParams = bytetoString(array[1]);
+        return new String(array[0]);
+    }
     public byte[][] encode(String message,byte[] secret) throws IOException {
         SecretKeySpec keySpec =new SecretKeySpec(secret, 0, 16, "AES");
         Cipher cipher=null;
@@ -39,7 +50,8 @@ public class CipherTextGenerator {
         byte[][] ret = {ciphertext,cipher.getParameters().getEncoded()};
         return ret;
     }
-    public byte[] decode(byte[][] crypt,byte[] secret){
+    public String decode(String cipherText,byte[] secret){
+        byte[][] crypt = new byte[][]{cipherText.getBytes(),StringtoByte(decodeParams)};
         SecretKeySpec aesKey = new SecretKeySpec(secret, 0, 16, "AES");
         byte[] encodedParams = crypt[1];
         AlgorithmParameters aesParams = null;
@@ -76,7 +88,34 @@ public class CipherTextGenerator {
         } catch (BadPaddingException e) {
             e.printStackTrace();
         }
-        return recovered;
+        return new String(recovered);
+    }
+    public String bytetoString(byte[] byteArray){
+
+        String hex = "";
+        // Iterating through each byte in the array
+        for (byte i : byteArray) {
+            hex += String.format("%02X", i);
+        }
+        return (hex);
+
+    }
+    public byte[] StringtoByte(String s){
+        byte[] ans = new byte[s.length() / 2];
+        //System.out.println("Hex String : "+s);
+        for (int i = 0; i < ans.length; i++) {
+            int index = i * 2;
+            // Using parseInt() method of Integer class
+            int val = Integer.parseInt(s.substring(index, index + 2), 16);
+            ans[i] = (byte)val;
+        }
+
+        // Printing the required Byte Array
+        System.out.print("Byte Array : ");
+        for (int i = 0; i < ans.length; i++) {
+            System.out.print(ans[i] + " ");
+        }
+        return ans;
     }
 
 }
